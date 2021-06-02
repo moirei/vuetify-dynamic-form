@@ -1,0 +1,76 @@
+{
+  "name": "@moirei/vuetify-dynamic-form",
+  "version": "0.1.0",
+  "description": "Dynamically create vuetify forms and form components .",
+  "private": false,
+  "main": "./dist/vuetifyDynamicForm.umd.min.js",
+  "files": [
+    "dist/vuetifyDynamicForm.umd.min.js"
+  ],
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "build-bundle": "vue-cli-service build --target lib --name vuetifyDynamicForm ./src/index.js",
+    "lint": "vue-cli-service lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moirei/vuetify-dynamic-form.git"
+  },
+  "keywords": [
+    "vue",
+    "vuetify",
+    "input",
+    "select",
+    "text",
+    "dynamic",
+    "form",
+    "component",
+    "javascript"
+  ],
+  "author": "Augustus Okoye <augustusokoye@moirei.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/moirei/vuetify-dynamic-form/issues"
+  },
+  "homepage": "https://github.com/moirei/vuetify-dynamic-form#readme",
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "lodash": "^4.17.21",
+    "vee-validate": "^3.4.8",
+    "vue": "^2.6.11",
+    "vuetify": "^2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
+    "deepmerge": "^4.2.2",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "fibers": "^5.0.0",
+    "sass": "^1.26.11",
+    "sass-loader": "^10.0.2",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
