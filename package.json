@@ -1,6 +1,6 @@
 {
   "name": "@moirei/vuetify-dynamic-form",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Dynamically create vuetify forms and form components .",
   "private": false,
   "main": "./dist/vuetifyDynamicForm.umd.min.js",
@@ -50,6 +50,7 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "fibers": "^5.0.0",
+    "moment": "^2.29.1",
     "sass": "^1.26.11",
     "sass-loader": "^10.0.2",
     "vue-template-compiler": "^2.6.11"

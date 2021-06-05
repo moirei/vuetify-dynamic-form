@@ -1,112 +1,86 @@
 <template>
-  <v-card v-bind="$props" style="overflow: hidden">
-    <validation-observer
-      v-slot="{ invalid }"
-      ref="observer"
-      class="w-full max-w-lg"
-      @submit.prevent="!invalid && submit()"
-    >
-      <v-card-title>
-        <slot name="title">{{ title }}</slot>
-        <v-spacer />
-        <slot name="header-actions"></slot>
-      </v-card-title>
-      <v-card-subtitle v-if="subtitle">{{ subtitle }}</v-card-subtitle>
-      <v-divider />
-      <slot name="top"></slot>
-      <v-card-text
-        :class="{ 'v-card-body-heightlight': highlightBody }"
-        :style="{
-          'max-height': maxBodyHeight,
-          'overflow-y': maxBodyHeight ? 'scroll' : '',
-        }"
-      >
-        <slot>
-          <div v-for="(fields, i) in lines" :key="`line-${i}`" class="mt-2">
-            <component :is="fields.length ? 'v-row' : 'div'">
-              <component
-                :is="fields.length ? 'v-col' : 'div'"
-                v-for="field in fields"
-                :key="`line-${i}--${field.input}`"
-                v-bind="field.col"
-              >
-                <div class="text-subtitle-2 mb-2">{{ field.name }}</div>
-                <slot :name="`field:validation:${field.input}`" v-bind="field">
-                  <validation-provider
-                    v-slot="{ errors }"
-                    :name="field.name"
-                    :rules="field.rules"
-                  >
-                    <slot
-                      :name="`field:${field.input}`"
-                      v-bind="{ ...field, errors }"
-                    >
-                      <component
-                        :is="getComponent(field.type)"
-                        v-model="form[field.input]"
-                        v-bind="field.props"
-                        :error-messages="errors"
-                        :disabled="loading"
-                      ></component>
-                    </slot>
-                  </validation-provider>
-                </slot>
-              </component>
-            </component>
-          </div>
-        </slot>
-      </v-card-text>
-      <v-divider />
-      <v-card-actions :class="{ 'v-card-body-heightlight': !highlightBody }">
-        <slot name="actions" v-bind="{ submit, valid }">
-          <v-spacer />
-          <v-btn
-            small
-            color="primary"
-            :loading="loading"
-            :disabled="loading || !is_valid"
-            type="submit"
-            @click="submit"
-            >Submit</v-btn
+  <validation-observer
+    v-slot="{ invalid }"
+    ref="observer"
+    class="w-full max-w-lg"
+  >
+    <form @submit.prevent="submit">
+      <div v-for="(fields, i) in lines" :key="`line-${i}`">
+        <component :is="fields.length ? 'v-row' : 'div'">
+          <component
+            :is="fields.length ? 'v-col' : 'div'"
+            v-for="field in fields"
+            :key="`line-${i}--${field.input}`"
+            v-bind="field.col"
+            class="py-0"
           >
-        </slot>
-      </v-card-actions>
-    </validation-observer>
-  </v-card>
+            <div v-if="!hideName" class="text-subtitle-2 mb-2">
+              {{ field.name }}
+            </div>
+            <slot :name="`field:validation:${field.input}`" v-bind="field">
+              <validation-provider
+                v-slot="{ errors }"
+                :name="field.name"
+                :rules="field.rules"
+              >
+                <slot
+                  :name="`field:${field.input}`"
+                  v-bind="{ ...field, errors }"
+                >
+                  <component
+                    :is="getComponent(field.type)"
+                    v-model="form[field.input]"
+                    v-bind="field.props"
+                    :error-messages="errors"
+                    :disabled="loading"
+                  ></component>
+                </slot>
+              </validation-provider>
+            </slot>
+          </component>
+        </component>
+      </div>
+      <slot name="actions" v-bind="{ submit, invalid }">
+        <v-btn
+          color="primary"
+          :loading="loading"
+          :disabled="loading || invalid"
+          type="submit"
+          @click="submit"
+          >Submit</v-btn
+        >
+        <v-btn @click="clear" class="ml-2">Clear</v-btn>
+      </slot>
+    </form>
+  </validation-observer>
 </template>
 
 <script>
 import { ValidationProvider, ValidationObserver } from "vee-validate";
-import mixin from "./mixin";
-import { debounce, pick, startCase, max, chain } from "lodash";
+import { get, pick, startCase, max, chain } from "lodash";
 
 export default {
   name: "VDynamicForm",
-  mixins: [mixin],
+  props: {
+    value: {},
+    hideName: { type: Boolean, default: false },
+    loading: { type: Boolean, default: false },
+    defaults: { type: Object, default: () => ({}) },
+    inputFields: { type: Object, required: true },
+  },
   components: {
     ValidationProvider,
     ValidationObserver,
   },
-  data: () => ({
-    is_valid: false,
-  }),
-  mounted() {
-    const pollReady = () => {
-      if (this.loading) {
-        setTimeout(pollReady, 300);
-      } else {
-        // start watching after input data is ready
-        // skips attempts to validate initially empty form
-        this.$watch("form", {
-          deep: true,
-          handler: "test",
-        });
-      }
-    };
-
-    setTimeout(pollReady, 300);
-  },
   computed: {
+    form: {
+      set(value) {
+        this.$emit("input", value);
+      },
+      get() {
+        return this.value || this.defaults;
+      },
+    },
     lines() {
       const items = Object.entries(this.inputFields).map(
         ([field, options]) => ({
@@ -114,6 +88,7 @@ export default {
           name: options.name || startCase(field),
           input: field,
           rules: options.rules || "",
+          mode: options.mode || "aggressive",
         })
       );
       const n = max(items.map((item) => item.line || 0));
@@ -136,31 +111,31 @@ export default {
     getComponent(type) {
       if (type == "text") return "v-text-field";
       if (type == "select") return "v-select";
+      if (type == "checkbox") return "v-checkbox";
+      if (type == "slider") return "v-slider";
+      if (type == "range-slider") return "v-range-slider";
+      if (type == "switch") return "v-switch";
+      if (type == "textarea") return "v-textarea";
+      if (type == "radio") return "v-radio";
       return "input";
-    },
-    test: debounce(function() {
-      this.validate();
-    }, 500),
-    async validate() {
-      let valid = false;
-      if (this.$refs.observer) {
-        valid = this.is_valid = await this.$refs.observer.validate();
-        this.$emit("update:valid", valid);
-      }
-      return valid;
-    },
-    async submit() {
-      await this.validate();
-      this.$emit("input", this.form);
-      if (this.valid) {
-        this.$emit("submit", this.form);
-      }
     },
     loadDataFrom(data) {
       this.form = {
         ...this.form,
         ...pick(data, Object.keys(this.inputFields)),
       };
+    },
+    async submit() {
+      const valid = this.$refs.observer.validate();
+      if (valid) {
+        this.$emit("submit", this.form);
+      }
+    },
+    clear() {
+      for (const field in this.form || {}) {
+        this.form[field] = get(this.defaults, field);
+      }
+      this.$refs.observer.reset();
     },
   },
 };

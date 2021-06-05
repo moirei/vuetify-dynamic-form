@@ -1,10 +1,18 @@
 # vuetify-dynamic-form
 
-This package provides a pair of Vuetify components for countries/region select inputs. Components may be used together or standalone. Vue-i18n is also supported.
+Defining and creating form components and their validation can be tedious and repetitive. This form allows you to dynamically define form inputs with configurable options.
 
-<img src="./public/vuetify-dynamic-form-demo.gif" alt="demo" width="100%"/>
+
+
+<img src="./public/form-input.png" alt="demo" width="100%"/>
 
 ---
+
+## :green_heart: Features
+* Dynamically create form input fields
+* Two-way binded form data. Useful when using forms in update context and the implementing component may update/provide the initial data
+* Slots to customise field components
+* Flexible configuration for validation, auto-grouping, component props, etc.
 
 ## Installation
 
@@ -19,79 +27,84 @@ npm i --save @moirei/vuetify-dynamic-form
 
 ```javascript
 import Vue from 'vue'
-import VCountryRegionSelect from '@moirei/vuetify-dynamic-form'
-Vue.use(VCountryRegionSelect)
+import VDynamicForm from '@moirei/vuetify-dynamic-form'
+Vue.use(VDynamicForm)
 
 new Vue({}).$mount('#app')
 
 // then inside your vue components
 export default Vue.extend({
   data: () => ({
-    country: 'AU',
-    region: 'South Australia'
+    form: {},
+    inputs: {
+      first_name: {
+        name: "First Name",
+        rules: "required|max:24",
+        type: "text",
+        line: 1,
+        props: {
+          filled: true,
+        },
+      },
+      last_name: {
+        name: "Last Name",
+        rules: "max:24",
+        type: "text",
+        line: 1,
+        props: {
+          filled: true,
+        },
+      },
+      email: {
+        name: "Email",
+        rules: "required|email",
+        type: "text",
+        props: {
+          filled: true,
+        },
+      },
+    },
   })
 })
 
 <template>
-    <v-country-select v-model="country" :country-name="countryName" />
-    <v-region-select v-model="region" :country="country" :country-name="countryName" />
-</template>
-```
-
-### Use standalone
-
-```vue
-<script>
-import { VCountrySelect } from '@moirei/vuetify-dynamic-form'
-
-export default {
-  name: 'App',
-  components: { VCountrySelect },
-  data: () => ({
-    country: 'AU',
-    countryName: true
-  })
-};
-</script>
-
-<template>
-    <v-country-select v-model="country" />
+  <v-dynamic-form v-model="form" :input-fields="inputs" />
 </template>
 ```
 
 
 
-## Options
+## API
 
-In addition to Vuetify VSelect props, here are the available attributes that can be used with the provided components.
+### props
 
-### VCountrySelect
-
-| Parameter        | Required? | Default | Type    | Description                                                  |
+| Name     | Required? | Default | Type    | Description                                                  |
 | ---------------- | --------- | ------- | ------- | ------------------------------------------------------------ |
-| v-model          | yes       | ''      | `string`  | The data binding for your component                          |
-| topCountry       | no        | ''      | `string`  | By providing this value you will tell component what country to put at the top of the dropdown list for easy selection. Make sure to use country short code. So for United states you would provide 'US'. However, if you set countryName to true make sure to also write out full country name when setting a topCountry. In this scenerio United States would be 'United States'. |
-| countryName      | no        | false   | `boolean` | By setting this value to true, country names will be output in full instead of using the abbreviated short codes. Make sure to set this true for both country and region if you are using. |
-| whiteList        | no        | []      | `array`   | Fill this array with capitalized short codes of the countries you want to appear in the dropdown list. ex: ['US', 'CA', 'MX'] |
-| blackList        | no        | []      | `array`   | Fill this array with capitalized short codes of the countries you want to remove from dropdown list. ex: ['US'] |
-| displayShortCode | no        | false   | `boolean` | Use this to have dropdown text display as short codes        |
-| usei18n          | no        | true    | `boolean` | Set to false if using i18n and want to disable for this component |
+| `value` | yes       |       | `string`  | The `v-model` input prop       |
+| `hide-name` | no        | `false` | `boolean` | Whether to hide input name displayed above the component field |
+| `loading` | no        | `false` | `boolean` | Indicates the form or its data is in loading state. All inputs are disabled if true. |
+| `defaults` | no        | `{}`  | `object` | Default form values to prepopulate the inputs with |
+| `inputFields` | yes      |       | `object` | The dynamic form fields |
 
 
 
-### VRegionSelect
+### events
 
-| Parameter          | Required? | Default         | Type    | Description                                                  |
-| ------------------ | --------- | --------------- | ------- | ------------------------------------------------------------ |
-| v-model            | yes       | ''              | `string`  | The data binding for your component                          |
-| country            | no        | ''              | `string`  | This tells the component what country to grab the list of displayed regions from. To have it work in tandem with country component provide it the variable that is tied to the v-model of the country-select component. |
-| defaultRegion      | no        | 'AU'            | `string`  | This allows you to set a default region when choosing not to use the country attribute. It will be set to regions of the United States if not provided. |
-| countryName        | no        | false           | `boolean` | Set this to true if you are using the region component in conjunction with Country Select and its `country-name` prop is set to `true`. |
-| regionName         | no        | false           | `boolean` | Set this to true if you want the v-model to output full region names instead of the default abbreviations. |
-| whiteList          | no        | []              | `array`   | Fill this array with capitalized short codes of the regions you want to appear in the dropdown list. ex: ['AL', 'AK', 'WA'] |
-| blackList          | no        | []              | `array`   | Fill this array with capitalized short codes of the regions you want to remove from dropdown list. ex: ['AZ'] |
-| displayShortCode   | no        | false           | `boolean` | Use this to have dropdown text display as short codes        |
-| usei18n            | no        | true            | `boolean` | Set to false if using i18n and want to disable for this component |
+| Name     | Description                                       |
+| -------- | ------------------------------------------------- |
+| `input`  | The `v-model` input event                         |
+| `submit` | Emitted when the form is validated and submitted. |
+
+
+
+### slots
+
+| Parameter                  | Description                                                  |
+| -------------------------- | ------------------------------------------------------------ |
+| `field:validation:{field}` | Use to override an input at the **validation-provider** level. |
+| `field:{field}`            | Use to override an input at the component level.             |
+
+
 
 ## Contributing
 
@@ -102,8 +115,6 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 ## Credits
 
 * [Augustus Okoye](https://github.com/augustusnaz)
-* [vue-country-region-select](https://github.com/gehrj/vue-country-region-select)
-* https://www.npmjs.com/package/country-region-data
 
 ## License
 
