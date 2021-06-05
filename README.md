@@ -4,7 +4,7 @@ Defining and creating form components and their validation can be tedious and re
 
 
 
-<img src="./public/form-input.png" alt="demo" width="100%"/>
+<img src="./public/form-input.PNG" alt="demo" width="100%"/>
 
 ---
 
@@ -78,13 +78,13 @@ export default Vue.extend({
 
 ### props
 
-| Name     | Required? | Default | Type    | Description                                                  |
-| ---------------- | --------- | ------- | ------- | ------------------------------------------------------------ |
-| `value` | yes       |       | `string`  | The `v-model` input prop       |
-| `hide-name` | no        | `false` | `boolean` | Whether to hide input name displayed above the component field |
-| `loading` | no        | `false` | `boolean` | Indicates the form or its data is in loading state. All inputs are disabled if true. |
-| `defaults` | no        | `{}`  | `object` | Default form values to prepopulate the inputs with |
-| `inputFields` | yes      |       | `object` | The dynamic form fields |
+| Name          | Required? | Default | Type      | Description                                                                          |
+| ------------- | --------- | ------- | --------- | ------------------------------------------------------------------------------------ |
+| `value`       | yes       |         | `string`  | The `v-model` input prop                                                             |
+| `hide-name`   | no        | `false` | `boolean` | Whether to hide input name displayed above the component field                       |
+| `loading`     | no        | `false` | `boolean` | Indicates the form or its data is in loading state. All inputs are disabled if true. |
+| `defaults`    | no        | `{}`    | `object`  | Default form values to prepopulate the inputs with                                   |
+| `inputFields` | yes       |         | `object`  | The dynamic form fields                                                              |
 
 
 
@@ -99,10 +99,10 @@ export default Vue.extend({
 
 ### slots
 
-| Parameter                  | Description                                                  |
-| -------------------------- | ------------------------------------------------------------ |
+| Parameter                  | Description                                                    |
+| -------------------------- | -------------------------------------------------------------- |
 | `field:validation:{field}` | Use to override an input at the **validation-provider** level. |
-| `field:{field}`            | Use to override an input at the component level.             |
+| `field:{field}`            | Use to override an input at the component level.               |
 
 
 
