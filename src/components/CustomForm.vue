@@ -23,6 +23,7 @@ export default {
         type: "text",
         props: {
           filled: true,
+          placeholder: "name@mail.com",
         },
       },
     },

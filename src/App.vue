@@ -22,7 +22,7 @@
           <v-card class="mt-10">
             <v-card-text>
               <v-card-text>Custom Form</v-card-text>
-              <custom-form v-model="custom_form" />
+              <custom-form v-model="custom_form" :valid.sync="valid" />
             </v-card-text>
           </v-card>
           <p>custom form data: {{ custom_form }}</p>
@@ -53,6 +53,7 @@ export default {
   name: "App",
   components: { CustomForm },
   data: () => ({
+    valid: false,
     form: {},
     custom_form: {
       name: "James Franco",

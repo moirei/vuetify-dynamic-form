@@ -78,31 +78,56 @@ export default Vue.extend({
 
 ### props
 
-| Name          | Required? | Default | Type      | Description                                                                          |
-| ------------- | --------- | ------- | --------- | ------------------------------------------------------------------------------------ |
-| `value`       | yes       |         | `string`  | The `v-model` input prop                                                             |
-| `hide-name`   | no        | `false` | `boolean` | Whether to hide input name displayed above the component field                       |
-| `loading`     | no        | `false` | `boolean` | Indicates the form or its data is in loading state. All inputs are disabled if true. |
-| `defaults`    | no        | `{}`    | `object`  | Default form values to prepopulate the inputs with                                   |
-| `inputFields` | yes       |         | `object`  | The dynamic form fields                                                              |
+| Name           | Required? | Default | Type      | Description                                                  |
+| -------------- | --------- | ------- | --------- | ------------------------------------------------------------ |
+| `value`        | yes       |         | `string`  | The `v-model` input prop                                     |
+| `hide-name`    | no        | `false` | `boolean` | Whether to hide input name displayed above the component field |
+| `loading`      | no        | `false` | `boolean` | Indicates the form or its data is in loading state. All inputs are disabled if true. |
+| `readonly`     | no        | `false` | `boolean` | Sets all inputs to readonly                                  |
+| `disabled`     | no        | `false` | `boolean` | Disables all inputs                                          |
+| `hide-actions` | no        | `false` | `boolean` | Hides the **SUBMIT** and **CLEAR** actions                   |
+| `defaults`     | no        | `{}`    | `object`  | Default form values to prepopulate the inputs with           |
+| `inputFields`  | yes       |         | `object`  | The dynamic form fields                                      |
+| `valid`        | false     |         | `boolean` | Form validation state. Use with `valid.sync`.                |
 
 
 
 ### events
 
-| Name     | Description                                       |
-| -------- | ------------------------------------------------- |
-| `input`  | The `v-model` input event                         |
-| `submit` | Emitted when the form is validated and submitted. |
+| Name           | Description                                       |
+| -------------- | ------------------------------------------------- |
+| `input`        | The `v-model` input event                         |
+| `submit`       | Emitted when the form is validated and submitted. |
+| `update:valid` | The `valid.sync` prop event                       |
 
 
 
 ### slots
 
-| Parameter                  | Description                                                    |
-| -------------------------- | -------------------------------------------------------------- |
-| `field:validation:{field}` | Use to override an input at the **validation-provider** level. |
-| `field:{field}`            | Use to override an input at the component level.               |
+| Name                       | Description                                                  | Props                           |
+| -------------------------- | ------------------------------------------------------------ | ------------------------------- |
+| `field:validation:{field}` | Use to override an input at the **validation-provider** level. | `{ field }`                     |
+| `field:{field}`            | Use to override an input at the component level.             | `{ ...field, invalid, errors }` |
+| `actions`                  | Use to override the default **SUBMIT** and **CLEAR** actions | `{ submit, clear, invalid }`    |
+
+
+
+### functions
+
+| Name     | Description                                 |
+| -------- | ------------------------------------------- |
+| `submit` | Validates and emits `submit` event if valid |
+| `clear`  | Resets the form data and validation states  |
+
+
+
+### classes
+
+| Name                      | Description                             |
+| ------------------------- | --------------------------------------- |
+| `v-dynamic-form`          | The components class                    |
+| `v-dynamic-form--inputs`  | The class group for all inputs          |
+| `v-dynamic-form--actions` | The class group for the default actions |
 
 
 
@@ -112,9 +137,17 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 
 
+## Changelog
+
+Please see [CHANGELOG](./CHANGELOG.md).
+
+
+
 ## Credits
 
 * [Augustus Okoye](https://github.com/augustusnaz)
+
+
 
 ## License
 

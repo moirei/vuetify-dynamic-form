@@ -1,63 +1,89 @@
 <template>
-  <validation-observer
-    v-slot="{ invalid }"
-    ref="observer"
-    class="w-full max-w-lg"
-  >
-    <form @submit.prevent="submit">
-      <div v-for="(fields, i) in lines" :key="`line-${i}`">
-        <component :is="fields.length ? 'v-row' : 'div'">
-          <component
-            :is="fields.length ? 'v-col' : 'div'"
-            v-for="field in fields"
-            :key="`line-${i}--${field.input}`"
-            v-bind="field.col"
-            class="py-0"
-          >
-            <div v-if="!hideName" class="text-subtitle-2 mb-2">
-              {{ field.name }}
-            </div>
-            <slot :name="`field:validation:${field.input}`" v-bind="field">
-              <validation-provider
-                v-slot="{ errors }"
-                :name="field.name"
-                :rules="field.rules"
+  <div class="v-dynamic-form">
+    <validation-observer
+      v-slot="{ invalid }"
+      ref="observer"
+      class="w-full max-w-lg"
+    >
+      <form @submit.prevent="submit">
+        <div class="v-dynamic-form--inputs">
+          <div v-for="(fields, i) in lines" :key="`line-${i}`">
+            <component :is="fields.length ? 'v-row' : 'div'">
+              <component
+                :is="fields.length ? 'v-col' : 'div'"
+                v-for="field in fields"
+                :key="`line-${i}--${field.input}`"
+                v-bind="field.col"
+                class="py-0"
               >
-                <slot
-                  :name="`field:${field.input}`"
-                  v-bind="{ ...field, errors }"
-                >
-                  <component
-                    :is="getComponent(field.type)"
-                    v-model="form[field.input]"
-                    v-bind="field.props"
-                    :error-messages="errors"
-                    :disabled="loading"
-                  ></component>
+                <div v-if="!hideName" class="text-subtitle-2 mb-2">
+                  {{ field.name }}
+                </div>
+                <slot :name="`field:validation:${field.input}`" v-bind="field">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    :name="field.name"
+                    :rules="field.rules"
+                  >
+                    <slot
+                      :name="`field:${field.input}`"
+                      v-bind="{ ...field, errors, invalid }"
+                    >
+                      <component
+                        :is="getComponent(field.type)"
+                        v-model="form[field.input]"
+                        v-bind="field.props"
+                        :error-messages="errors"
+                        :disabled="loading || disabled || field.props.disabled"
+                        :readonly="readonly || field.props.readonly"
+                      ></component>
+                    </slot>
+                  </validation-provider>
                 </slot>
-              </validation-provider>
-            </slot>
-          </component>
-        </component>
-      </div>
-      <slot name="actions" v-bind="{ submit, invalid }">
-        <v-btn
-          color="primary"
-          :loading="loading"
-          :disabled="loading || invalid"
-          type="submit"
-          @click="submit"
-          >Submit</v-btn
+              </component>
+            </component>
+          </div>
+        </div>
+        <slot
+          v-if="!hideActions"
+          name="actions"
+          v-bind="{ submit, clear, invalid }"
         >
-        <v-btn @click="clear" class="ml-2">Clear</v-btn>
-      </slot>
-    </form>
-  </validation-observer>
+          <div class="v-dynamic-form--actions">
+            <v-btn
+              color="primary"
+              :loading="loading"
+              :disabled="loading || disabled || invalid"
+              type="submit"
+              @click="submit"
+              >Submit</v-btn
+            >
+            <v-btn @click="clear" class="ml-2">Clear</v-btn>
+          </div>
+        </slot>
+      </form>
+
+      <!-- dummy state propergate -->
+      <state-buffer :invalid="invalid" v-on="$listeners" />
+    </validation-observer>
+  </div>
 </template>
 
 <script>
-import { ValidationProvider, ValidationObserver } from "vee-validate";
 import { get, pick, startCase, max, chain } from "lodash";
+
+const StateBuffer = {
+  name: "StateBuffer",
+  props: ["invalid"],
+  watch: {
+    invalid(value) {
+      this.$emit("update:valid", !value);
+    },
+  },
+  render() {
+    return "span";
+  },
+};
 
 export default {
   name: "VDynamicForm",
@@ -65,13 +91,14 @@ export default {
     value: {},
     hideName: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
+    readonly: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    hideActions: { type: Boolean, default: false },
     defaults: { type: Object, default: () => ({}) },
-    inputFields: { type: Object, required: true },
+    inputFields: Object,
+    valid: Boolean,
   },
-  components: {
-    ValidationProvider,
-    ValidationObserver,
-  },
+  components: { StateBuffer },
   computed: {
     form: {
       set(value) {
@@ -89,6 +116,7 @@ export default {
           input: field,
           rules: options.rules || "",
           mode: options.mode || "aggressive",
+          props: options.props || {},
         })
       );
       const n = max(items.map((item) => item.line || 0));
