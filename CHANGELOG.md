@@ -12,3 +12,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 1.1.1
 - fix: register vuetify input components
+
+## 1.2.0
+- fix: fix rows/cols truthy condition
+- fix: git `input-fields` prop a default value
+- fix: patch methods
+- feat: `hide-name` option per field

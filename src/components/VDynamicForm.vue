@@ -8,15 +8,17 @@
       <form @submit.prevent="submit">
         <div class="v-dynamic-form--inputs">
           <div v-for="(fields, i) in lines" :key="`line-${i}`">
-            <component :is="fields.length ? 'v-row' : 'div'">
+            <component :is="fields.length > 1 ? 'v-row' : 'div'">
               <component
-                :is="fields.length ? 'v-col' : 'div'"
+                :is="fields.length > 1 ? 'v-col' : 'div'"
                 v-for="field in fields"
                 :key="`line-${i}--${field.input}`"
                 v-bind="field.col"
-                class="py-0"
               >
-                <div v-if="!hideName" class="text-subtitle-2 mb-2">
+                <div
+                  v-if="!field.hideName"
+                  class="v-dynamic-form--input-subtitle text-subtitle-2 mb-1"
+                >
                   {{ field.name }}
                 </div>
                 <slot :name="`field:validation:${field.input}`" v-bind="field">
@@ -105,7 +107,7 @@ export default {
     disabled: { type: Boolean, default: false },
     hideActions: { type: Boolean, default: false },
     defaults: { type: Object, default: () => ({}) },
-    inputFields: Object,
+    inputFields: { type: Object, default: () => ({}) },
     valid: Boolean,
   },
   components: {
@@ -136,6 +138,7 @@ export default {
           input: field,
           rules: options.rules || "",
           mode: options.mode || "aggressive",
+          hideName: this.hideName || options.hideName || options["hide-name"],
           props: options.props || {},
         })
       );
@@ -169,12 +172,12 @@ export default {
     },
     loadDataFrom(data) {
       this.form = {
-        ...this.form,
+        ...(this.form || {}),
         ...pick(data, Object.keys(this.inputFields)),
       };
     },
     async submit() {
-      const valid = this.$refs.observer.validate();
+      const valid = await this.$refs.observer.validate();
       if (valid) {
         this.$emit("submit", this.form);
       }
@@ -183,8 +186,17 @@ export default {
       for (const field in this.form || {}) {
         this.form[field] = get(this.defaults, field);
       }
-      this.$refs.observer.reset();
+      this.$refs.observer && this.$refs.observer.reset();
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.v-dynamic-form--input-subtitle + span,
+.v-dynamic-form--input-subtitle + div {
+  .v-input.v-input--selection-controls {
+    margin-top: 0;
+  }
+}
+</style>
