@@ -9,3 +9,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - feat: register **vee-validate** components globally
 - feat: form validity state with `valid.sync`
 - task: update docs
+
+## 1.1.1
+- fix: register vuetify input components

@@ -1,6 +1,6 @@
 {
   "name": "@moirei/vuetify-dynamic-form",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Dynamically create vuetify forms and form components .",
   "private": false,
   "main": "./dist/vuetifyDynamicForm.umd.min.js",

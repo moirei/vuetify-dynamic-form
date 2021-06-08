@@ -87,7 +87,7 @@ export default Vue.extend({
 | `disabled`     | no        | `false` | `boolean` | Disables all inputs                                          |
 | `hide-actions` | no        | `false` | `boolean` | Hides the **SUBMIT** and **CLEAR** actions                   |
 | `defaults`     | no        | `{}`    | `object`  | Default form values to prepopulate the inputs with           |
-| `inputFields`  | yes       |         | `object`  | The dynamic form fields                                      |
+| `input-fields` | yes       |         | `object`  | The dynamic form fields                                      |
 | `valid`        | false     |         | `boolean` | Form validation state. Use with `valid.sync`.                |
 
 

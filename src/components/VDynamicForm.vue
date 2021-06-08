@@ -70,6 +70,16 @@
 </template>
 
 <script>
+import {
+  VTextField,
+  VSelect,
+  VCheckbox,
+  VSlider,
+  VRangeSlider,
+  VSwitch,
+  VTextarea,
+  VRadio,
+} from "vuetify/lib";
 import { get, pick, startCase, max, chain } from "lodash";
 
 const StateBuffer = {
@@ -98,7 +108,17 @@ export default {
     inputFields: Object,
     valid: Boolean,
   },
-  components: { StateBuffer },
+  components: {
+    StateBuffer,
+    VTextField,
+    VSelect,
+    VCheckbox,
+    VSlider,
+    VRangeSlider,
+    VSwitch,
+    VTextarea,
+    VRadio,
+  },
   computed: {
     form: {
       set(value) {
