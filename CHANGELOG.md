@@ -18,3 +18,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - fix: git `input-fields` prop a default value
 - fix: patch methods
 - feat: `hide-name` option per field
+
+## 1.3.0
+- feat: `hidden` field option
+- feat: `component` field option for rendering custom components

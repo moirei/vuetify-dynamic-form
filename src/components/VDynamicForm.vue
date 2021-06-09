@@ -14,6 +14,7 @@
                 v-for="field in fields"
                 :key="`line-${i}--${field.input}`"
                 v-bind="field.col"
+                v-show="!field.hidden"
               >
                 <div
                   v-if="!field.hideName"
@@ -32,7 +33,7 @@
                       v-bind="{ ...field, errors, invalid }"
                     >
                       <component
-                        :is="getComponent(field.type)"
+                        :is="getComponent(field)"
                         v-model="form[field.input]"
                         v-bind="field.props"
                         :error-messages="errors"
@@ -159,7 +160,8 @@ export default {
     },
   },
   methods: {
-    getComponent(type) {
+    getComponent({ type, component }) {
+      if (component) return component;
       if (type == "text") return "v-text-field";
       if (type == "select") return "v-select";
       if (type == "checkbox") return "v-checkbox";
@@ -177,16 +179,20 @@ export default {
       };
     },
     async submit() {
-      const valid = await this.$refs.observer.validate();
-      if (valid) {
-        this.$emit("submit", this.form);
+      if (this.$refs.observer) {
+        const valid = await this.$refs.observer.validate();
+        if (valid) {
+          this.$emit("submit", this.form);
+        }
       }
     },
     clear() {
       for (const field in this.form || {}) {
         this.form[field] = get(this.defaults, field);
       }
-      this.$refs.observer && this.$refs.observer.reset();
+      if (this.$refs.observer) {
+        this.$refs.observer.reset();
+      }
     },
   },
 };
