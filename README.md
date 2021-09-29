@@ -28,6 +28,7 @@ npm i --save @moirei/vuetify-dynamic-form
 ```javascript
 import Vue from 'vue'
 import VDynamicForm from '@moirei/vuetify-dynamic-form'
+import { VTextField } from 'vuetify/lib'
 Vue.use(VDynamicForm)
 
 new Vue({}).$mount('#app')
@@ -49,7 +50,7 @@ export default Vue.extend({
       last_name: {
         name: "Last Name",
         rules: "max:24",
-        type: "text",
+        component: "v-text-field", // Use a compnent name
         line: 1,
         props: {
           filled: true,
@@ -58,7 +59,7 @@ export default Vue.extend({
       email: {
         name: "Email",
         rules: "required|email",
-        type: "text",
+        component: VTextField, // Use a component
         props: {
           filled: true,
         },
@@ -76,7 +77,7 @@ export default Vue.extend({
 
 ## API
 
-### props
+### Props
 
 | Name           | Required? | Default | Type      | Description                                                  |
 | -------------- | --------- | ------- | --------- | ------------------------------------------------------------ |
@@ -92,7 +93,21 @@ export default Vue.extend({
 
 
 
-### events
+### Field options
+
+| Field          | Default | Type                 | Description                                                  |
+| -------------- | ------- | -------------------- | ------------------------------------------------------------ |
+| `name`         | Field key | `string`             | The input display name |
+| `rules`        |         | `string`|`array`     |
+| `component`    |  | `string`|`Component` |
+| `type`         |         | `string`             | Vuetify input types. Valid values: `text`, `select`, `checkbox`, `slider`, `range-slider`, `switch`, `textarea` and `radio`. Uses `<input >` tag if empty and `component` is also empty. |
+| `props`        |  | `object`    | Input component props           |
+| `mode` | `aggressive` | `string` | Vee-validate mode |
+| `hideName`/`hide-name` | `false` | `boolean` | Hide the input display name |
+
+
+
+### Events
 
 | Name           | Description                                       |
 | -------------- | ------------------------------------------------- |
@@ -102,7 +117,7 @@ export default Vue.extend({
 
 
 
-### slots
+### Slots
 
 | Name                       | Description                                                  | Props                           |
 | -------------------------- | ------------------------------------------------------------ | ------------------------------- |
@@ -112,7 +127,7 @@ export default Vue.extend({
 
 
 
-### functions
+### Functions
 
 | Name     | Description                                 |
 | -------- | ------------------------------------------- |
@@ -121,7 +136,7 @@ export default Vue.extend({
 
 
 
-### classes
+### Classes
 
 | Name                      | Description                             |
 | ------------------------- | --------------------------------------- |
