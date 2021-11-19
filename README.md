@@ -89,7 +89,7 @@ export default Vue.extend({
 | `hide-actions` | no        | `false` | `boolean` | Hides the **SUBMIT** and **CLEAR** actions                   |
 | `defaults`     | no        | `{}`    | `object`  | Default form values to prepopulate the inputs with           |
 | `input-fields` | yes       |         | `object`  | The dynamic form fields                                      |
-| `valid`        | false     |         | `boolean` | Form validation state. Use with `valid.sync`.                |
+| `valid`        | no        |         | `boolean` | Form validation state. Use with `valid.sync`.                |
 
 
 
@@ -104,6 +104,7 @@ export default Vue.extend({
 | `props`        |  | `object`    | Input component props           |
 | `mode` | `aggressive` | `string` | Vee-validate mode |
 | `hideName`/`hide-name` | `false` | `boolean` | Hide the input display name |
+| `vid`          | Field key  | `string`             | Input field validation ID.                                   |
 
 
 

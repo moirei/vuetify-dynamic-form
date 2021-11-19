@@ -27,6 +27,7 @@
                     v-slot="{ errors }"
                     :name="field.name"
                     :rules="field.rules"
+                    :vid="field.vid || field.input"
                   >
                     <slot
                       :name="`field:${field.input}`"

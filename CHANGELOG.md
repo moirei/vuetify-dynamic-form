@@ -22,3 +22,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ## 1.3.0
 - feat: `hidden` field option
 - feat: `component` field option for rendering custom components
+
+## 1.3.1
+- feat: add `vid` field option
