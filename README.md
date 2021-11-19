@@ -97,10 +97,10 @@ export default Vue.extend({
 
 | Field          | Default | Type                 | Description                                                  |
 | -------------- | ------- | -------------------- | ------------------------------------------------------------ |
-| `name`         | Field key | `string`             | The input display name |
-| `rules`        |         | `string`|`array`     |
-| `component`    |  | `string`|`Component` |
-| `type`         |         | `string`             | Vuetify input types. Valid values: `text`, `select`, `checkbox`, `slider`, `range-slider`, `switch`, `textarea` and `radio`. Uses `<input >` tag if empty and `component` is also empty. |
+| `name`         | Field key | `string`           | The input display name |
+| `rules`        |         | `string`\|`array`    | [Vee-validate](https://vee-validate.logaretm.com) rules |
+| `component`    |         | `string`\|`Component`|
+| `type`         | Uses `<input >` tag if empty and `component` is also empty. | `string`             | Vuetify input types. Valid values: `text`, `select`, `checkbox`, `slider`, `range-slider`, `switch`, `textarea` and `radio`.|
 | `props`        |  | `object`    | Input component props           |
 | `mode` | `aggressive` | `string` | Vee-validate mode |
 | `hideName`/`hide-name` | `false` | `boolean` | Hide the input display name |
