@@ -1,9 +1,9 @@
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import VDynamicForm from "@/components/VDynamicForm.vue";
 
-const install = function(Vue, options = {}) {
-  Vue.prototype.dynamicFormOptions = {
-    interactionMode: options.interactionMode || "aggressive",
+const install = function (Vue, options = {}) {
+  Vue.dynamicFormOptions = {
+    interactionMode: options?.interactionMode || "aggressive",
   };
   Vue.component("ValidationProvider", ValidationProvider);
   Vue.component("ValidationObserver", ValidationObserver);

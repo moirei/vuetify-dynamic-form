@@ -134,7 +134,7 @@ export default {
       },
     },
     lines() {
-      const $defaults = Vue.prototype.dynamicFormOptions;
+      const $defaults = Vue.dynamicFormOptions || {};
 
       const items = Object.entries(this.inputFields).map(([field, options]) => {
         const config = {

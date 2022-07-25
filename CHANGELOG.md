@@ -35,3 +35,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 - feat: global config defaults
 - fix: apply all field options
+
+## 1.3.3
+
+- fix: default options errors
