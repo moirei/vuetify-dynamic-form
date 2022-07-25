@@ -36,7 +36,6 @@
   },
   "homepage": "https://github.com/moirei/vuetify-dynamic-form#readme",
   "dependencies": {
-    "core-js": "^3.6.5",
     "lodash": "^4.17.21",
     "vee-validate": "^3.4.8",
     "vue": "^2.6.11",
@@ -50,9 +49,8 @@
     "deepmerge": "^4.2.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "fibers": "^5.0.0",
     "moment": "^2.29.1",
-    "sass": "^1.26.11",
+    "sass": "~1.32.12",
     "sass-loader": "^10.0.2",
     "vue-template-compiler": "^2.6.11"
   },

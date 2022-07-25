@@ -25,8 +25,7 @@
                 <slot :name="`field:validation:${field.input}`" v-bind="field">
                   <validation-provider
                     v-slot="{ errors }"
-                    :name="field.name"
-                    :rules="field.rules"
+                    v-bind="field"
                     :vid="field.vid || field.input"
                   >
                     <slot
@@ -74,6 +73,7 @@
 </template>
 
 <script>
+import Vue from "vue";
 import {
   VTextField,
   VSelect,
@@ -110,6 +110,7 @@ export default {
     hideActions: { type: Boolean, default: false },
     defaults: { type: Object, default: () => ({}) },
     inputFields: { type: Object, default: () => ({}) },
+    interactionMode: { type: String },
     valid: Boolean,
   },
   components: {
@@ -133,17 +134,22 @@ export default {
       },
     },
     lines() {
-      const items = Object.entries(this.inputFields).map(
-        ([field, options]) => ({
+      const $defaults = Vue.prototype.dynamicFormOptions;
+
+      const items = Object.entries(this.inputFields).map(([field, options]) => {
+        const config = {
           ...options,
           name: options.name || startCase(field),
           input: field,
           rules: options.rules || "",
-          mode: options.mode || "aggressive",
+          mode:
+            options.mode || this.interactionMode || $defaults.interactionMode,
           hideName: this.hideName || options.hideName || options["hide-name"],
           props: options.props || {},
-        })
-      );
+        };
+
+        return config;
+      });
       const n = max(items.map((item) => item.line || 0));
       return chain(items)
         .map((item, i) => {
