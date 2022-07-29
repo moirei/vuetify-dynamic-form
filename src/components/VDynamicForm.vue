@@ -25,7 +25,9 @@
                 <slot :name="`field:validation:${field.input}`" v-bind="field">
                   <validation-provider
                     v-slot="{ errors }"
-                    v-bind="field"
+                    :name="field.name"
+                    :rules="field.rules"
+                    :mode="field.mode"
                     :vid="field.vid || field.input"
                   >
                     <slot
@@ -33,7 +35,7 @@
                       v-bind="{ ...field, errors, invalid }"
                     >
                       <component
-                        :is="getComponent(field)"
+                        :is="field.component"
                         v-model="form[field.input]"
                         v-bind="field.props"
                         :error-messages="errors"
@@ -73,7 +75,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import {
   VTextField,
   VSelect,
@@ -134,22 +135,24 @@ export default {
       },
     },
     lines() {
-      const $defaults = Vue.dynamicFormOptions || {};
+      const dynamicFormOptions =
+        this.$dynamicFormOptions || this.$parent?.$dynamicFormOptions || {};
 
-      const items = Object.entries(this.inputFields).map(([field, options]) => {
-        const config = {
+      const items = Object.entries(this.inputFields).map(
+        ([field, options]) => ({
           ...options,
           name: options.name || startCase(field),
           input: field,
           rules: options.rules || "",
           mode:
-            options.mode || this.interactionMode || $defaults.interactionMode,
+            options.mode ||
+            this.interactionMode ||
+            dynamicFormOptions.interactionMode,
           hideName: this.hideName || options.hideName || options["hide-name"],
           props: options.props || {},
-        };
-
-        return config;
-      });
+          component: this.getComponent(options),
+        })
+      );
       const n = max(items.map((item) => item.line || 0));
       return chain(items)
         .map((item, i) => {

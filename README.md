@@ -96,16 +96,17 @@ export default Vue.extend({
 
 ### Field options
 
-| Field                  | Default                                                     | Type                  | Description                                                  |
-| ---------------------- | ----------------------------------------------------------- | --------------------- | ------------------------------------------------------------ |
-| `name`                 | Field key                                                   | `string`              | The input display name                                       |
-| `rules`                |                                                             | `string`\|`array`     | [Vee-validate](https://vee-validate.logaretm.com) rules      |
-| `component`            |                                                             | `string`\|`Component` |                                                              |
+| Field                  | Default                                                     | Type                  | Description                                                                                                                 |
+| ---------------------- | ----------------------------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `name`                 | Field key                                                   | `string`              | The input display name                                                                                                      |
+| `rules`                |                                                             | `string`\|`array`     | [Vee-validate](https://vee-validate.logaretm.com) rules                                                                     |
+| `col`                  |                                                             | `object`              | Props to bind to `v-col` with multiple fields in one line                                                                   |
+| `component`            |                                                             | `string`\|`Component` |                                                                                                                             |
 | `type`                 | Uses `<input >` tag if empty and `component` is also empty. | `string`              | Vuetify input types. Valid values: `text`, `select`, `checkbox`, `slider`, `range-slider`, `switch`, `textarea` and `radio` |
-| `props`                |                                                             | `object`              | Input component props                                        |
-| `mode`                 | `aggressive`                                                | `string`              | Vee-validate mode                                            |
-| `hideName`/`hide-name` | `false`                                                     | `boolean`             | Hide the input display name                                  |
-| `vid`                  | Field key                                                   | `string`              | Input field validation ID                                    |
+| `props`                |                                                             | `object`              | Input component props                                                                                                       |
+| `mode`                 | `aggressive`                                                | `string`              | Vee-validate mode                                                                                                           |
+| `hideName`/`hide-name` | `false`                                                     | `boolean`             | Hide the input display name                                                                                                 |
+| `vid`                  | Field key                                                   | `string`              | Input field validation ID                                                                                                   |
 
 ### Plugin options
 
@@ -113,8 +114,6 @@ export default Vue.extend({
 | ----------------- | -------------- | --------- | ----------------------------------------- |
 | `interactionMode` | `"aggressive"` | `string`  | Configure global default interaction mode |
 | `hideName`        | `false`        | `boolean` | Configure the global default              |
-
-
 
 ### Events
 
