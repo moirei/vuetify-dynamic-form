@@ -1,6 +1,6 @@
-# vuetify-dynamic-form
+# vuetify-dynamic-form (Vue 2)
 
-Defining and creating form components and their validation can be tedious and repetitive. This form allows you to dynamically define form inputs with configurable options.
+Defining and creating form components and their validation can be tedious and repetitive. This package allows you to dynamically define form inputs with configurable options.
 
 <img src="./public/form-input.PNG" alt="demo" width="100%"/>
 
@@ -10,6 +10,7 @@ Defining and creating form components and their validation can be tedious and re
 
 - Dynamically create form input fields
 - Two-way binded form data. Useful when using forms in update context and the implementing component may update/provide the initial data
+- [vee-validate v3](https://vee-validate.logaretm.com/v3) validation
 - Slots to customise field components
 - Flexible configuration for validation, auto-grouping, component props, etc.
 
@@ -25,14 +26,13 @@ npm i --save @moirei/vuetify-dynamic-form
 ```javascript
 import Vue from 'vue'
 import VDynamicForm from '@moirei/vuetify-dynamic-form'
-import { VTextField } from 'vuetify/lib'
+import CustomComponent from './CustomComponent'
 
 Vue.use(VDynamicForm)
 
 // or with global defaults
 Vue.use(VDynamicForm, {
-	interactionMode: "aggressive",
-    hideName: false,
+  interactionMode: "aggressive",
 })
 
 new Vue({}).$mount('#app')
@@ -60,10 +60,9 @@ export default Vue.extend({
           filled: true,
         },
       },
-      email: {
-        name: "Email",
-        rules: "required|email",
-        component: VTextField, // Use a component
+      address: {
+        name: "Address",
+        component: CustomComponent, // Use a component
         props: {
           filled: true,
         },
@@ -81,39 +80,41 @@ export default Vue.extend({
 
 ### Props
 
-| Name               | Required? | Default | Type      | Description                                                                                                                  |
-| ------------------ | --------- | ------- | --------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `value`            | yes       |         | `string`  | The `v-model` input prop                                                                                                     |
-| `hide-name`        | no        | `false` | `boolean` | Whether to hide input name displayed above the component field                                                               |
-| `loading`          | no        | `false` | `boolean` | Indicates the form or its data is in loading state. All inputs are disabled if true.                                         |
-| `readonly`         | no        | `false` | `boolean` | Sets all inputs to readonly                                                                                                  |
-| `disabled`         | no        | `false` | `boolean` | Disables all inputs                                                                                                          |
-| `hide-actions`     | no        | `false` | `boolean` | Hides the **SUBMIT** and **CLEAR** actions                                                                                   |
-| `defaults`         | no        | `{}`    | `object`  | Default form values to prepopulate the inputs with                                                                           |
-| `interaction-mode` | no        |         | `string`  | Set the default [interaction mode](https://vee-validate.logaretm.com/v2/guide/interaction.html#configuration) for all inputs |
-| `input-fields`     | yes       |         | `object`  | The dynamic form fields                                                                                                      |
-| `valid`            | no        |         | `boolean` | Form validation state. Use with `valid.sync`.                                                                                |
+| Name                     | Required? | Default | Type      | Description                                                  |
+| ------------------------ | --------- | ------- | --------- | ------------------------------------------------------------ |
+| `value`                  | yes       |         | `string`  | The `v-model` input prop                                     |
+| `hide-name`              | no        | `false` | `boolean` | Whether to hide input name displayed above the component field |
+| `loading`                | no        | `false` | `boolean` | Indicates the form or its data is in loading state. All inputs are disabled if true. |
+| `readonly`               | no        | `false` | `boolean` | Sets all inputs to readonly                                  |
+| `disabled`               | no        | `false` | `boolean` | Disables all inputs                                          |
+| `disable-object-rewrite` | no        | `false` | `boolean` | Do not clone and emit new object for form data. When enabled, field input property is updated on the form data and the `input` event is not fired. |
+| `hide-actions`           | no        | `false` | `boolean` | Hides the **SUBMIT** and **CLEAR** actions                   |
+| `defaults`               | no        | `{}`    | `object`  | Default form values to prepopulate the inputs with           |
+| `interaction-mode`       | no        |         | `string`  | Set the default [interaction mode](https://vee-validate.logaretm.com/v2/guide/interaction.html#configuration) for all inputs |
+| `input-fields`           | yes       |         | `object`  | The dynamic form fields                                      |
+| `nested-fields`          | no        | `false` | `boolean` | Allow nested fields. When true, field names like `"address.line1"` will be saved as property `line1` in object `address` within the form data. To use array as nested key, use the `key` field option. |
+| `valid`                  | no        |         | `boolean` | Form validation state. Use with `valid.sync`.                |
 
 ### Field options
 
 | Field                  | Default                                                     | Type                  | Description                                                                                                                 |
-| ---------------------- | ----------------------------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `name`                 | Field key                                                   | `string`              | The input display name                                                                                                      |
-| `rules`                |                                                             | `string`\|`array`     | [Vee-validate](https://vee-validate.logaretm.com) rules                                                                     |
+| ---------------------- | ----------------------------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
 | `col`                  |                                                             | `object`              | Props to bind to `v-col` with multiple fields in one line                                                                   |
 | `component`            |                                                             | `string`\|`Component` |                                                                                                                             |
-| `type`                 | Uses `<input >` tag if empty and `component` is also empty. | `string`              | Vuetify input types. Valid values: `text`, `select`, `checkbox`, `slider`, `range-slider`, `switch`, `textarea` and `radio` |
-| `props`                |                                                             | `object`              | Input component props                                                                                                       |
-| `mode`                 | `aggressive`                                                | `string`              | Vee-validate mode                                                                                                           |
 | `hideName`/`hide-name` | `false`                                                     | `boolean`             | Hide the input display name                                                                                                 |
+| `key`                  | Field key                                                   | `string`              | `string[]`                                                                                                                  | Specify the field key in the form data |
+| `props`                |                                                             | `object`              | Input component props                                                                                                       |
+| `rules`                |                                                             | `string`\|`array`     | [Vee-validate](https://vee-validate.logaretm.com) rules                                                                     |
+| `type`                 | Uses `<input >` tag if empty and `component` is also empty. | `string`              | Vuetify input types. Valid values: `text`, `select`, `checkbox`, `slider`, `range-slider`, `switch`, `textarea` and `radio` |
+| `mode`                 | `aggressive`                                                | `string`              | Vee-validate mode                                                                                                           |
+| `name`                 | Field key                                                   | `string`              | The input display name                                                                                                      |
 | `vid`                  | Field key                                                   | `string`              | Input field validation ID                                                                                                   |
 
 ### Plugin options
 
-| Field             | Default        | Type      | Description                               |
-| ----------------- | -------------- | --------- | ----------------------------------------- |
-| `interactionMode` | `"aggressive"` | `string`  | Configure global default interaction mode |
-| `hideName`        | `false`        | `boolean` | Configure the global default              |
+| Field             | Default        | Type     | Description                               |
+| ----------------- | -------------- | -------- | ----------------------------------------- |
+| `interactionMode` | `"aggressive"` | `string` | Configure global default interaction mode |
 
 ### Events
 
@@ -133,10 +134,12 @@ export default Vue.extend({
 
 ### Functions
 
-| Name     | Description                                 |
-| -------- | ------------------------------------------- |
-| `submit` | Validates and emits `submit` event if valid |
-| `clear`  | Resets the form data and validation states  |
+| Name       | Description                                 |
+| ---------- | ------------------------------------------- |
+| `submit`   | Validates and emits `submit` event if valid |
+| `clear`    | Resets the form data and validation states  |
+| `reset`    | Reset the validation observer               |
+| `validate` | Validates all inputs and child forms        |
 
 ### Classes
 

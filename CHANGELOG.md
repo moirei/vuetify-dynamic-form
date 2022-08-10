@@ -42,3 +42,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - fix: revert core-js
 - fix: revert sass version
 - fix: add `col` field options to docs
+
+## 1.3.4
+
+- feat: add nested field key support
+- feat: add test suite
+- feat: add reset and validate method
+- feat: add rewrite data object support

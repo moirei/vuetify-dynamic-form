@@ -1,22 +1,18 @@
 {
   "name": "@moirei/vuetify-dynamic-form",
   "version": "1.3.3",
-  "description": "Dynamically create vuetify forms and form components .",
+  "description": "Dynamically create forms with vuetify and custom components.",
   "private": false,
-  "main": "./dist/vuetifyDynamicForm.umd.min.js",
+  "main": "dist/v-dynamic-form.umd.min.js",
   "files": [
-    "dist/vuetifyDynamicForm.umd.min.js"
+    "dist/v-dynamic-form.umd.min.js"
   ],
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "build-bundle": "vue-cli-service build --target lib --name vuetifyDynamicForm ./src/index.js",
-    "prepare": "npm run build-bundle",
+    "build": "vue-cli-service build --target lib --name v-dynamic-form src/index.ts",
+    "test:unit": "vue-cli-service test:unit",
+    "prepare": "yarn build",
     "lint": "vue-cli-service lint"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/moirei/vuetify-dynamic-form.git"
   },
   "keywords": [
     "vue",
@@ -27,7 +23,7 @@
     "dynamic",
     "form",
     "component",
-    "javascript"
+    "typescript"
   ],
   "author": "Augustus Okoye <augustusokoye@moirei.com>",
   "license": "MIT",
@@ -36,42 +32,41 @@
   },
   "homepage": "https://github.com/moirei/vuetify-dynamic-form#readme",
   "dependencies": {
-    "core-js": "^3.6.5",
+    "core-js": "^3.8.3",
     "lodash": "^4.17.21",
-    "vee-validate": "3",
-    "vue": "^2.6.11",
-    "vuetify": "^2"
+    "vee-validate": "^3.4.8",
+    "vue": "^2.6.14",
+    "vue-class-component": "^7.2.3",
+    "vue-property-decorator": "^9.1.2",
+    "vuetify": "^2.6.8"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "babel-eslint": "^10.1.0",
-    "deepmerge": "^4.2.2",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.2.2",
-    "moment": "^2.29.1",
-    "sass": "^1.26.11",
-    "sass-loader": "^10.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "@types/chai": "^4.2.15",
+    "@types/lodash": "^4.14.182",
+    "@types/mocha": "^8.2.1",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-typescript": "~5.0.0",
+    "@vue/cli-plugin-unit-mocha": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/eslint-config-typescript": "^9.1.0",
+    "@vue/test-utils": "^1.1.3",
+    "chai": "^4.2.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "prettier": "^2.4.1",
+    "sass": "^1.32.7",
+    "sass-loader": "^12.0.0",
+    "typescript": "~4.5.5",
+    "vue-template-compiler": "^2.6.14"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+  "peerDependencies": {
+    "vee-validate": "^3.4.8",
+    "vue": "^2.6.14",
+    "vuetify": "^2.6.8"
+  }
 }

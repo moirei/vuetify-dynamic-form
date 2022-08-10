@@ -24,11 +24,12 @@
                 </div>
                 <slot :name="`field:validation:${field.input}`" v-bind="field">
                   <validation-provider
+                    tag="div"
                     v-slot="{ errors }"
                     :name="field.name"
                     :rules="field.rules"
-                    :mode="field.mode"
-                    :vid="field.vid || field.input"
+                    :vid="field.vid"
+                    :persist="true"
                   >
                     <slot
                       :name="`field:${field.input}`"
@@ -36,12 +37,13 @@
                     >
                       <component
                         :is="field.component"
-                        v-model="form[field.input]"
+                        @input="(v) => setFormField(field.key, v)"
+                        :value="getFormField(field.key)"
                         v-bind="field.props"
                         :error-messages="errors"
-                        :disabled="loading || disabled || field.props.disabled"
-                        :readonly="readonly || field.props.readonly"
-                      ></component>
+                        :disabled="field.disabled"
+                        :readonly="field.readonly"
+                      />
                     </slot>
                   </validation-provider>
                 </slot>
@@ -74,20 +76,22 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
+import { Prop } from "vue/types/options";
 import {
-  VTextField,
-  VSelect,
-  VCheckbox,
-  VSlider,
-  VRangeSlider,
-  VSwitch,
-  VTextarea,
-  VRadio,
-} from "vuetify/lib";
-import { get, pick, startCase, max, chain } from "lodash";
+  get,
+  startCase,
+  max,
+  chain,
+  isUndefined,
+  cloneDeep,
+  tap,
+} from "lodash";
+import { getInputComponent, getInputKeys, set } from "../utils";
+import { InputLine } from "../index";
 
-const StateBuffer = {
+const StateBuffer = Vue.extend({
   name: "StateBuffer",
   props: ["invalid"],
   watch: {
@@ -95,10 +99,14 @@ const StateBuffer = {
       this.$emit("update:valid", !value);
     },
   },
-  render() {
-    return "span";
+  render(h) {
+    return h("div", {
+      attrs: {
+        style: "visibility: hidden",
+      },
+    });
   },
-};
+});
 
 export default {
   name: "VDynamicForm",
@@ -109,59 +117,64 @@ export default {
     readonly: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     hideActions: { type: Boolean, default: false },
-    defaults: { type: Object, default: () => ({}) },
+    defaults: { type: Object as Prop<any>, default: () => ({}) },
     inputFields: { type: Object, default: () => ({}) },
     interactionMode: { type: String },
+    tag: { type: String, default: "div" },
+    nestedFields: { type: Boolean, default: false },
+    disableObjectRewrite: { type: Boolean, default: false },
     valid: Boolean,
   },
   components: {
     StateBuffer,
-    VTextField,
-    VSelect,
-    VCheckbox,
-    VSlider,
-    VRangeSlider,
-    VSwitch,
-    VTextarea,
-    VRadio,
   },
   computed: {
     form: {
-      set(value) {
+      set(value: any) {
         this.$emit("input", value);
       },
-      get() {
-        return this.value || this.defaults;
+      get(): any {
+        return this.value || Object.assign({}, this.defaults);
       },
     },
     lines() {
       const dynamicFormOptions =
         this.$dynamicFormOptions || this.$parent?.$dynamicFormOptions || {};
 
-      const items = Object.entries(this.inputFields).map(
-        ([field, options]) => ({
+      const items: InputLine[] = Object.entries(this.inputFields).map(
+        ([field, options]: [string, any]) => ({
           ...options,
           name: options.name || startCase(field),
           input: field,
+          key: options.key || field,
           rules: options.rules || "",
           mode:
             options.mode ||
             this.interactionMode ||
             dynamicFormOptions.interactionMode,
+          vid: options.vid || field,
           hideName: this.hideName || options.hideName || options["hide-name"],
           props: options.props || {},
           component: this.getComponent(options),
+          disabled:
+            this.loading ||
+            (!isUndefined(options.props?.disabled)
+              ? options.props?.disabled
+              : this.disabled),
+          readonly: !isUndefined(options.props?.readonly)
+            ? options.props?.readonly
+            : this.readonly,
         })
       );
-      const n = max(items.map((item) => item.line || 0));
+      const n: number = max(items.map((item: any) => item.line || 0)) || 0;
+
       return chain(items)
         .map((item, i) => {
           if (item.line === undefined) {
             item.line = n + i;
           } else {
-            item.line = item.line + n;
+            item.line = Number(item.line) + n;
           }
-
           return item;
         })
         .sortBy("line")
@@ -170,38 +183,61 @@ export default {
     },
   },
   methods: {
-    getComponent({ type, component }) {
+    getComponent({ type, component }: any) {
       if (component) return component;
-      if (type == "text") return "v-text-field";
-      if (type == "select") return "v-select";
-      if (type == "checkbox") return "v-checkbox";
-      if (type == "slider") return "v-slider";
-      if (type == "range-slider") return "v-range-slider";
-      if (type == "switch") return "v-switch";
-      if (type == "textarea") return "v-textarea";
-      if (type == "radio") return "v-radio";
-      return "input";
+      return getInputComponent(type);
     },
-    loadDataFrom(data) {
-      this.form = {
-        ...(this.form || {}),
-        ...pick(data, Object.keys(this.inputFields)),
-      };
+    loadDataFrom(data: any) {
+      getInputKeys(this.inputFields).forEach((key) => {
+        this.setFormField(key, get(data, key));
+      });
     },
     async submit() {
-      if (this.$refs.observer) {
-        const valid = await this.$refs.observer.validate();
-        if (valid) {
-          this.$emit("submit", this.form);
-        }
+      const valid = await this.validate();
+      if (valid) {
+        this.$emit("submit", this.form);
       }
     },
     clear() {
-      for (const field in this.form || {}) {
-        this.form[field] = get(this.defaults, field);
-      }
+      getInputKeys(this.inputFields).forEach((key) => {
+        this.setFormField(key, get(this.defaults, key));
+      });
+      this.reset();
+    },
+    reset() {
       if (this.$refs.observer) {
+        // @ts-ignore observer not typed
         this.$refs.observer.reset();
+      }
+    },
+    async validate(silent?: boolean) {
+      if (this.$refs.observer) {
+        // @ts-ignore observer not typed
+        return this.$refs.observer.validate(silent);
+      }
+    },
+    getFormField(field: string | string[]) {
+      if (this.nestedFields) {
+        return get(this.form, field);
+      }
+      return this.form[String(field)];
+    },
+    setFormField(field: string | string[], value: any) {
+      if (this.disableObjectRewrite) {
+        if (this.nestedFields) {
+          set(this.form, field, value);
+        } else {
+          this.$set(this.form, String(field), value);
+        }
+      } else {
+        const form = tap(cloneDeep(this.form), (f) => {
+          if (this.nestedFields) {
+            set(f, field, value);
+          } else {
+            this.$set(f, String(field), value);
+          }
+        });
+        this.$emit("input", form);
       }
     },
   },

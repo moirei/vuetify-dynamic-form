@@ -14,18 +14,27 @@
           <v-card>
             <v-card-text>
               <v-card-text>Form</v-card-text>
-              <v-dynamic-form v-model="form" :input-fields="inputs" />
+              <v-dynamic-form
+                v-model="form"
+                :input-fields="inputs"
+                :valid.sync="valid.form"
+              />
             </v-card-text>
           </v-card>
           <p>form data: {{ form }}</p>
+          <p>valid data: {{ valid }}</p>
 
           <v-card class="mt-10">
             <v-card-text>
               <v-card-text>Custom Form</v-card-text>
-              <custom-form v-model="custom_form" :valid.sync="valid" />
+              <custom-form
+                v-model="custom_form"
+                :valid.sync="valid.custom_form"
+              />
             </v-card-text>
           </v-card>
           <p>custom form data: {{ custom_form }}</p>
+          <p>valid data: {{ valid }}</p>
         </v-flex>
       </v-layout>
     </v-container>
@@ -53,8 +62,12 @@ export default {
   name: "App",
   components: { CustomForm },
   data: () => ({
-    valid: false,
-    form: {},
+    form: {
+      //
+    },
+    valid: {
+      //
+    },
     custom_form: {
       name: "James Franco",
     },
