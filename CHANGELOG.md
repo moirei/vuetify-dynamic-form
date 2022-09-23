@@ -49,3 +49,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - feat: add test suite
 - feat: add reset and validate method
 - feat: add rewrite data object support
+
+## 1.3.5
+
+- fix: package error

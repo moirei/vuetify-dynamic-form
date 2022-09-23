@@ -44,18 +44,18 @@
 <script>
 import { extend, setInteractionMode } from "vee-validate";
 import { required, email } from "vee-validate/dist/rules";
-import CustomForm from "./components/CustomForm";
+import CustomForm from "../src/components/CustomForm";
 
 setInteractionMode("eager");
 
 extend("required", {
   ...required,
-  message: "{_field_} can not be empty",
+  message: "{_field_} can not be empty"
 });
 
 extend("email", {
   ...email,
-  message: "{_field_} must be an email address",
+  message: "{_field_} must be an email address"
 });
 
 export default {
@@ -69,7 +69,7 @@ export default {
       //
     },
     custom_form: {
-      name: "James Franco",
+      name: "James Franco"
     },
     inputs: {
       first_name: {
@@ -78,25 +78,25 @@ export default {
         type: "text",
         line: 1,
         props: {
-          filled: true,
-        },
+          filled: true
+        }
       },
       last_name: {
         name: "Last Name",
         type: "text",
         line: 1,
         props: {
-          filled: true,
-        },
+          filled: true
+        }
       },
       email: {
         name: "Email",
         rules: "required|email",
         type: "text",
         props: {
-          filled: true,
-        },
-      },
+          filled: true
+        }
+      }
       // verified: {
       //   name: "Verified",
       //   type: "checkbox",
@@ -107,8 +107,8 @@ export default {
       //     // value: "1",
       //   },
       // },
-    },
-  }),
+    }
+  })
 };
 </script>
 

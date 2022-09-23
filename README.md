@@ -30,7 +30,7 @@ import CustomComponent from './CustomComponent'
 
 Vue.use(VDynamicForm)
 
-// or with global defaults
+// Or with options
 Vue.use(VDynamicForm, {
   interactionMode: "aggressive",
 })
@@ -80,25 +80,25 @@ export default Vue.extend({
 
 ### Props
 
-| Name                     | Required? | Default | Type      | Description                                                  |
-| ------------------------ | --------- | ------- | --------- | ------------------------------------------------------------ |
-| `value`                  | yes       |         | `string`  | The `v-model` input prop                                     |
-| `hide-name`              | no        | `false` | `boolean` | Whether to hide input name displayed above the component field |
-| `loading`                | no        | `false` | `boolean` | Indicates the form or its data is in loading state. All inputs are disabled if true. |
-| `readonly`               | no        | `false` | `boolean` | Sets all inputs to readonly                                  |
-| `disabled`               | no        | `false` | `boolean` | Disables all inputs                                          |
-| `disable-object-rewrite` | no        | `false` | `boolean` | Do not clone and emit new object for form data. When enabled, field input property is updated on the form data and the `input` event is not fired. |
-| `hide-actions`           | no        | `false` | `boolean` | Hides the **SUBMIT** and **CLEAR** actions                   |
-| `defaults`               | no        | `{}`    | `object`  | Default form values to prepopulate the inputs with           |
-| `interaction-mode`       | no        |         | `string`  | Set the default [interaction mode](https://vee-validate.logaretm.com/v2/guide/interaction.html#configuration) for all inputs |
-| `input-fields`           | yes       |         | `object`  | The dynamic form fields                                      |
+| Name                     | Required? | Default | Type      | Description                                                                                                                                                                                            |
+| ------------------------ | --------- | ------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `value`                  | yes       |         | `string`  | The `v-model` input prop                                                                                                                                                                               |
+| `hide-name`              | no        | `false` | `boolean` | Whether to hide input name displayed above the component field                                                                                                                                         |
+| `loading`                | no        | `false` | `boolean` | Indicates the form or its data is in loading state. All inputs are disabled if true.                                                                                                                   |
+| `readonly`               | no        | `false` | `boolean` | Sets all inputs to readonly                                                                                                                                                                            |
+| `disabled`               | no        | `false` | `boolean` | Disables all inputs                                                                                                                                                                                    |
+| `disable-object-rewrite` | no        | `false` | `boolean` | Do not clone and emit new object for form data. When enabled, field input property is updated on the form data and the `input` event is not fired.                                                     |
+| `hide-actions`           | no        | `false` | `boolean` | Hides the **SUBMIT** and **CLEAR** actions                                                                                                                                                             |
+| `defaults`               | no        | `{}`    | `object`  | Default form values to prepopulate the inputs with                                                                                                                                                     |
+| `interaction-mode`       | no        |         | `string`  | Set the default [interaction mode](https://vee-validate.logaretm.com/v2/guide/interaction.html#configuration) for all inputs                                                                           |
+| `input-fields`           | yes       |         | `object`  | The dynamic form fields                                                                                                                                                                                |
 | `nested-fields`          | no        | `false` | `boolean` | Allow nested fields. When true, field names like `"address.line1"` will be saved as property `line1` in object `address` within the form data. To use array as nested key, use the `key` field option. |
-| `valid`                  | no        |         | `boolean` | Form validation state. Use with `valid.sync`.                |
+| `valid`                  | no        |         | `boolean` | Form validation state. Use with `valid.sync`.                                                                                                                                                          |
 
 ### Field options
 
 | Field                  | Default                                                     | Type                  | Description                                                                                                                 |
-| ---------------------- | ----------------------------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| ---------------------- | ----------------------------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `col`                  |                                                             | `object`              | Props to bind to `v-col` with multiple fields in one line                                                                   |
 | `component`            |                                                             | `string`\|`Component` |                                                                                                                             |
 | `hideName`/`hide-name` | `false`                                                     | `boolean`             | Hide the input display name                                                                                                 |

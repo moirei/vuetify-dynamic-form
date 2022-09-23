@@ -1,15 +1,5 @@
 import Vue from "vue";
-import {
-  VCheckbox,
-  VRadio,
-  VRangeSlider,
-  VSelect,
-  VSlider,
-  VSwitch,
-  VTextarea,
-  VTextField,
-} from "vuetify/lib";
-import { InputLine } from ".";
+import { InputLine } from "./types";
 
 export const isServer = () => typeof window === "undefined";
 
@@ -50,7 +40,7 @@ export const logger = {
   },
   error(...msgs: any[]) {
     console.error("[v-dynamic-form]", ...msgs);
-  },
+  }
 };
 
 export const isBool = <T, V = T extends boolean ? true : false>(v: T): V =>
@@ -115,12 +105,12 @@ export const getInputKeys = (
 };
 
 export const getInputComponent = (input: string) => {
-  if (input == "text") return VTextField;
-  if (input == "select") return VSelect;
-  if (input == "checkbox") return VCheckbox;
-  if (input == "slider") return VSlider;
-  if (input == "range-slider") return VRangeSlider;
-  if (input == "switch") return VSwitch;
-  if (input == "textarea") return VTextarea;
-  if (input == "radio") return VRadio;
+  if (input == "text") return "VTextField";
+  if (input == "select") return "VSelect";
+  if (input == "checkbox") return "VCheckbox";
+  if (input == "slider") return "VSlider";
+  if (input == "range-slider") return "VRangeSlider";
+  if (input == "switch") return "VSwitch";
+  if (input == "textarea") return "VTextarea";
+  if (input == "radio") return "VRadio";
 };

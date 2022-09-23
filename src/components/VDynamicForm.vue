@@ -37,7 +37,7 @@
                     >
                       <component
                         :is="field.component"
-                        @input="(v) => setFormField(field.key, v)"
+                        @input="v => setFormField(field.key, v)"
                         :value="getFormField(field.key)"
                         v-bind="field.props"
                         :error-messages="errors"
@@ -71,13 +71,12 @@
       </form>
 
       <!-- dummy state propergate -->
-      <state-buffer :invalid="invalid" v-on="$listeners" />
+      <state-buffer :invalid="invalid" @update:valid="forwardValid" />
     </validation-observer>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Prop } from "vue/types/options";
 import {
   get,
@@ -89,9 +88,9 @@ import {
   tap,
 } from "lodash";
 import { getInputComponent, getInputKeys, set } from "../utils";
-import { InputLine } from "../index";
+import { InputLine } from "../types";
 
-const StateBuffer = Vue.extend({
+const StateBuffer = {
   name: "StateBuffer",
   props: ["invalid"],
   watch: {
@@ -106,7 +105,7 @@ const StateBuffer = Vue.extend({
       },
     });
   },
-});
+}
 
 export default {
   name: "VDynamicForm",
@@ -240,6 +239,9 @@ export default {
         this.$emit("input", form);
       }
     },
+    forwardValid(valid){
+      this.$emit("update:valid", valid)
+    }
   },
 };
 </script>

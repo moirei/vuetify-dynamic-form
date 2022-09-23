@@ -1,37 +1,48 @@
+// https://www.typescriptlang.org/docs/handbook/compiler-options.html
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ES5",
     "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "types": [
-      "vuetify",
-      "vee-validate",
-      "@types/lodash",
-      "webpack-env",
-      "mocha",
-      "chai"
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "es2015",
+      "es2016",
+      "es2017",
+      "es2018"
     ],
+    "skipLibCheck": true,
+    "declaration": false,
+    "sourceMap": true,
+    "downlevelIteration": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["src/*"]
+      "~/*": ["./*"],
+      "@/*": ["./*"]
     },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "types": ["webpack-env", "node"],
+    "strict": false,
+    "noUnusedLocals": true,
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
+    "types/**/*",
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
+    "demo/**/*.vue",
+    "demo/**/*.ts",
+    "demo/**/*.js",
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src/**/*.spec.ts"]
 }

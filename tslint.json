@@ -1,0 +1,46 @@
+{
+  "defaultSeverity": "warning",
+  // tslint:latest for some reason, it knocks down the rules specified in the rules, for example, quotemark (this didn’t seem to happen before)
+  "extends": ["tslint", "tslint-config-standard"],
+  "linterOptions": {
+    //    "include": [
+    //      "./src/**/*.ts"
+    //    ],
+    //    "exclude": [
+    //      "**/*.spec.js",
+    //      "./node_modules/**/*"
+    //    ]
+  },
+  "rules": {
+    "no-console": false,
+
+    // do not specify public (it is the default)
+    "member-access": [true, "no-public"],
+    "object-literal-key-quotes": false,
+    "no-var-requires": false,
+    "interface-name": [true, "never-prefix"],
+    "prefer-const": true,
+    "ordered-imports": [false],
+    "object-literal-sort-keys": [false],
+    "arrow-parens": false,
+    "indent": [true, "spaces", 2],
+
+    // it is important for the imports work
+    "no-implicit-dependencies": false,
+    // it was true
+    "no-submodule-imports": [false, "~", "@"],
+
+    "quotemark": [true, "single"],
+    "semicolon": [true, "never"],
+    "trailing-comma": [
+      true,
+      {
+        "multiline": "never",
+        "singleline": "never"
+      }
+    ],
+    "space-before-function-paren": true,
+
+    "restrict-plus-operands": false
+  }
+}
