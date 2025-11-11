@@ -1,48 +1,28 @@
-// https://www.typescriptlang.org/docs/handbook/compiler-options.html
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "esnext",
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "es2015",
-      "es2016",
-      "es2017",
-      "es2018"
-    ],
-    "skipLibCheck": true,
-    "declaration": false,
-    "sourceMap": true,
-    "downlevelIteration": true,
-    "moduleResolution": "node",
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "baseUrl": "./src",
-    "paths": {
-      "~/*": ["./*"],
-      "@/*": ["./*"]
-    },
-    "typeRoots": ["./types", "./node_modules/@types"],
-    "types": ["webpack-env", "node"],
-    "strict": false,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "strict": true,
     "noUnusedLocals": true,
-    "noImplicitAny": false,
-    "noImplicitThis": false,
-    "strictNullChecks": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "~/*": ["./runtime/*"]
+    },
+    "types": ["node", "vite/client"]
   },
-  "include": [
-    "types/**/*",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "demo/**/*.vue",
-    "demo/**/*.ts",
-    "demo/**/*.js",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
-  ],
-  "exclude": ["node_modules", "src/**/*.spec.ts"]
+  "include": ["src/**/*", "runtime/**/*", "nuxt/**/*", "*.ts", "*.vue"],
+  "exclude": ["node_modules", "dist", "demo", "**/*.spec.ts"]
 }

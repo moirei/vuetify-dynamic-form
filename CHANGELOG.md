@@ -1,55 +1,38 @@
-# Change Log
+# Vuetify Dynamic Form
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+## Changelog
 
-## 1.1.0
+### [2.0.0] - 2024-XX-XX
 
-- feat: add component classes `v-dynamic-form`, `v-dynamic-form--inputs`, `v-dynamic-form--actions`
-- feat: add `disabled`, `readonly`, `hide-actions` props
-- feat: register **vee-validate** components globally
-- feat: form validity state with `valid.sync`
-- task: update docs
+#### 🎉 Major Release - Vue 3 Migration
 
-## 1.1.1
+**Breaking Changes:**
+- Migrated from Vue 2 to Vue 3
+- Migrated from Vuetify 2 to Vuetify 3
+- Migrated from vee-validate v3 to v4
+- Changed `value` prop to `modelValue`
+- Changed `inputFields` prop to `inputs`
+- Changed `@input` event to `@update:model-value`
 
-- fix: register vuetify input components
+**New Features:**
+- ✅ Vue 3 Composition API
+- ✅ Nuxt 3 module support with auto-imports
+- ✅ Framework-agnostic core (works with/without Nuxt)
+- ✅ Better TypeScript support
+- ✅ Modern build system (Vite)
+- ✅ Enhanced validation options
+- ✅ Type casting support (string, number, boolean, integer)
+- ✅ Better performance with optimized reactivity
 
-## 1.2.0
+**Improvements:**
+- Better type safety throughout
+- Modern ESLint configuration
+- Improved code organization
+- Better documentation
 
-- fix: fix rows/cols truthy condition
-- fix: git `input-fields` prop a default value
-- fix: patch methods
-- feat: `hide-name` option per field
+**Migration Guide:**
+See README.md for migration instructions from v1.x to v2.x
 
-## 1.3.0
+### [1.3.6] - Final Vue 2 Version
 
-- feat: `hidden` field option
-- feat: `component` field option for rendering custom components
-
-## 1.3.1
-
-- feat: add `vid` field option
-
-## 1.3.2
-
-- feat: global config defaults
-- fix: apply all field options
-
-## 1.3.3
-
-- fix: default options errors
-- fix: revert core-js
-- fix: revert sass version
-- fix: add `col` field options to docs
-
-## 1.3.4
-
-- feat: add nested field key support
-- feat: add test suite
-- feat: add reset and validate method
-- feat: add rewrite data object support
-
-## 1.3.5
-
-- fix: package error
+Last stable version for Vue 2 + Vuetify 2 + vee-validate v3

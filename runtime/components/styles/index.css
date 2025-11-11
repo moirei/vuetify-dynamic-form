@@ -1,0 +1,21 @@
+.v-dynamic-form {
+  width: 100%;
+}
+
+.v-dynamic-form-field-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.v-dynamic-form--input-subtitle {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.v-dynamic-form--input-subtitle + span,
+.v-dynamic-form--input-subtitle + div {
+  .v-input.v-input--selection-controls {
+    margin-top: 0;
+  }
+}
+

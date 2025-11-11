@@ -1,166 +1,465 @@
-# vuetify-dynamic-form (Vue 2)
+# @moirei/vuetify-dynamic-form
 
-Defining and creating form components and their validation can be tedious and repetitive. This package allows you to dynamically define form inputs with configurable options.
+> Dynamically create Vuetify 3 forms with Vue 3. Works seamlessly with and without Nuxt.
 
-<img src="./public/form-input.PNG" alt="demo" width="100%"/>
+[![npm version](https://img.shields.io/npm/v/@moirei/vuetify-dynamic-form.svg)](https://www.npmjs.com/package/@moirei/vuetify-dynamic-form)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
----
+## ✨ Features
 
-## :green_heart: Features
+- **Vue 3 + Vuetify 3** - Built with modern Vue 3 Composition API
+- **Framework Agnostic** - Works with Vue 3, Nuxt 3, Vite, or any Vue 3 setup
+- **vee-validate v4** - Powerful form validation
+- **Dynamic Fields** - Define form fields with simple configuration
+- **Auto-imports** - Nuxt module with auto-imports (optional)
+- **TypeScript** - Full TypeScript support
+- **Flexible** - Customizable validation, props, and component overrides
+- **Slots** - Extensive slot support for customization
 
-- Dynamically create form input fields
-- Two-way binded form data. Useful when using forms in update context and the implementing component may update/provide the initial data
-- [vee-validate v3](https://vee-validate.logaretm.com/v3) validation
-- Slots to customise field components
-- Flexible configuration for validation, auto-grouping, component props, etc.
-
-## Installation
+## 📦 Installation
 
 ```bash
-npm i --save @moirei/vuetify-dynamic-form
-# or yarn add @moirei/vuetify-dynamic-form
+npm install @moirei/vuetify-dynamic-form
+# or
+yarn add @moirei/vuetify-dynamic-form
+# or
+pnpm add @moirei/vuetify-dynamic-form
 ```
 
-## Usage
+### Peer Dependencies
 
-```javascript
-import Vue from 'vue'
-import VDynamicForm from '@moirei/vuetify-dynamic-form'
-import CustomComponent from './CustomComponent'
+Make sure you have these installed:
 
-Vue.use(VDynamicForm)
+```bash
+npm install vue@^3.0.0 vuetify@^3.0.0 vee-validate@^4.0.0
+```
 
-// Or with options
-Vue.use(VDynamicForm, {
-  interactionMode: "aggressive",
-})
+## 🚀 Quick Start
 
-new Vue({}).$mount('#app')
+### Vue 3 (Non-Nuxt)
 
-// then inside your vue components
-export default Vue.extend({
-  data: () => ({
-    form: {},
-    inputs: {
-      first_name: {
-        name: "First Name",
-        rules: "required|max:24",
-        type: "text",
-        line: 1,
-        props: {
-          filled: true,
-        },
-      },
-      last_name: {
-        name: "Last Name",
-        rules: "max:24",
-        component: "v-text-field", // Use a compnent name
-        line: 1,
-        props: {
-          filled: true,
-        },
-      },
-      address: {
-        name: "Address",
-        component: CustomComponent, // Use a component
-        props: {
-          filled: true,
-        },
-      },
-    },
-  })
-})
+```typescript
+import { createApp } from "vue";
+import VuetifyDynamicForm from "@moirei/vuetify-dynamic-form";
+import { createVuetify } from "vuetify";
 
+const app = createApp(App);
+const vuetify = createVuetify();
+
+app.use(VuetifyDynamicForm);
+app.use(vuetify);
+app.mount("#app");
+```
+
+### Nuxt 3
+
+Add to your `nuxt.config.ts`:
+
+```typescript
+export default defineNuxtConfig({
+  modules: ["@moirei/vuetify-dynamic-form/nuxt"],
+});
+```
+
+Components and composables will be auto-imported! 🎉
+
+## 📖 Usage
+
+### Basic Example
+
+```vue
 <template>
-  <v-dynamic-form v-model="form" :input-fields="inputs" />
+  <VDynamicForm v-model="form" :inputs="inputs" @submit="handleSubmit" />
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+
+const form = ref({
+  firstName: "",
+  email: "",
+});
+
+const inputs = {
+  firstName: {
+    name: "First Name",
+    type: "text",
+    rules: "required|max:24",
+    props: {
+      filled: true,
+    },
+  },
+  email: {
+    name: "Email",
+    type: "text",
+    rules: "required|email",
+    props: {
+      filled: true,
+      placeholder: "name@example.com",
+    },
+  },
+};
+
+const handleSubmit = (values: any) => {
+  console.log("Form submitted:", values);
+};
+</script>
+```
+
+### With Nuxt Auto-imports
+
+In Nuxt 3, components are auto-imported, so you can use them directly:
+
+```vue
+<template>
+  <VDynamicForm v-model="form" :inputs="inputs" />
+</template>
+
+<script setup lang="ts">
+const form = ref({});
+const inputs = {
+  /* ... */
+};
+</script>
+```
+
+### Field Configuration
+
+```typescript
+const inputs = {
+  // Simple text field
+  firstName: {
+    name: "First Name",
+    type: "text",
+    rules: "required|max:24",
+  },
+
+  // Select field
+  country: {
+    name: "Country",
+    type: "select",
+    rules: "required",
+    props: {
+      items: ["USA", "Canada", "Mexico"],
+    },
+  },
+
+  // Custom component
+  customField: {
+    name: "Custom Field",
+    component: MyCustomComponent,
+    rules: "required",
+  },
+
+  // With casting
+  age: {
+    name: "Age",
+    type: "number",
+    cast: "integer",
+    rules: "required|min_value:18",
+  },
+
+  // Multiple fields on same line
+  firstName: {
+    name: "First Name",
+    type: "text",
+    line: 1,
+    col: { cols: 6 },
+  },
+  lastName: {
+    name: "Last Name",
+    type: "text",
+    line: 1,
+    col: { cols: 6 },
+  },
+};
+```
+
+### Advanced Features
+
+#### Custom Validation
+
+```typescript
+import { defineFormInputs } from "@moirei/vuetify-dynamic-form";
+
+const inputs = defineFormInputs({
+  email: {
+    name: "Email",
+    type: "text",
+    rules: [
+      "required",
+      "email",
+      (value: string) => {
+        if (value.endsWith("@example.com")) {
+          return "Cannot use example.com email";
+        }
+        return true;
+      },
+    ],
+  },
+});
+```
+
+#### Slots
+
+```vue
+<template>
+  <VDynamicForm v-model="form" :inputs="inputs">
+    <template #firstName:field="{ input, modelValue, handleChange }">
+      <VTextField
+        :model-value="modelValue"
+        @update:model-value="handleChange"
+        v-bind="input.props"
+      />
+    </template>
+
+    <template #before>
+      <VCardTitle>Form Title</VCardTitle>
+    </template>
+
+    <template #after>
+      <VCardActions>
+        <VBtn @click="reset">Reset</VBtn>
+      </VCardActions>
+    </template>
+  </VDynamicForm>
 </template>
 ```
 
-## API
+#### Form Methods
 
-### Props
+```vue
+<template>
+  <VDynamicForm ref="formRef" v-model="form" :inputs="inputs" />
+</template>
 
-| Name                     | Required? | Default | Type      | Description                                                                                                                                                                                            |
-| ------------------------ | --------- | ------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `value`                  | yes       |         | `string`  | The `v-model` input prop                                                                                                                                                                               |
-| `hide-name`              | no        | `false` | `boolean` | Whether to hide input name displayed above the component field                                                                                                                                         |
-| `loading`                | no        | `false` | `boolean` | Indicates the form or its data is in loading state. All inputs are disabled if true.                                                                                                                   |
-| `readonly`               | no        | `false` | `boolean` | Sets all inputs to readonly                                                                                                                                                                            |
-| `disabled`               | no        | `false` | `boolean` | Disables all inputs                                                                                                                                                                                    |
-| `disable-object-rewrite` | no        | `false` | `boolean` | Do not clone and emit new object for form data. When enabled, field input property is updated on the form data and the `input` event is not fired.                                                     |
-| `hide-actions`           | no        | `false` | `boolean` | Hides the **SUBMIT** and **CLEAR** actions                                                                                                                                                             |
-| `defaults`               | no        | `{}`    | `object`  | Default form values to prepopulate the inputs with                                                                                                                                                     |
-| `interaction-mode`       | no        |         | `string`  | Set the default [interaction mode](https://vee-validate.logaretm.com/v2/guide/interaction.html#configuration) for all inputs                                                                           |
-| `input-fields`           | yes       |         | `object`  | The dynamic form fields                                                                                                                                                                                |
-| `nested-fields`          | no        | `false` | `boolean` | Allow nested fields. When true, field names like `"address.line1"` will be saved as property `line1` in object `address` within the form data. To use array as nested key, use the `key` field option. |
-| `valid`                  | no        |         | `boolean` | Form validation state. Use with `valid.sync`.                                                                                                                                                          |
+<script setup lang="ts">
+import { ref } from "vue";
 
-### Field options
+const formRef = ref();
 
-| Field                  | Default                                                     | Type                  | Description                                                                                                                 |
-| ---------------------- | ----------------------------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `col`                  |                                                             | `object`              | Props to bind to `v-col` with multiple fields in one line                                                                   |
-| `component`            |                                                             | `string`\|`Component` |                                                                                                                             |
-| `hideName`/`hide-name` | `false`                                                     | `boolean`             | Hide the input display name                                                                                                 |
-| `key`                  | Field key                                                   | `string`              | `string[]`                                                                                                                  | Specify the field key in the form data |
-| `props`                |                                                             | `object`              | Input component props                                                                                                       |
-| `rules`                |                                                             | `string`\|`array`     | [Vee-validate](https://vee-validate.logaretm.com) rules                                                                     |
-| `type`                 | Uses `<input >` tag if empty and `component` is also empty. | `string`              | Vuetify input types. Valid values: `text`, `select`, `checkbox`, `slider`, `range-slider`, `switch`, `textarea` and `radio` |
-| `mode`                 | `aggressive`                                                | `string`              | Vee-validate mode                                                                                                           |
-| `name`                 | Field key                                                   | `string`              | The input display name                                                                                                      |
-| `vid`                  | Field key                                                   | `string`              | Input field validation ID                                                                                                   |
+// Validate form
+const validate = async () => {
+  const isValid = await formRef.value?.validate();
+  if (isValid) {
+    // Form is valid
+  }
+};
 
-### Plugin options
+// Validate specific field
+const validateField = async (field: string) => {
+  await formRef.value?.validateField(field);
+};
+</script>
+```
 
-| Field             | Default        | Type     | Description                               |
-| ----------------- | -------------- | -------- | ----------------------------------------- |
-| `interactionMode` | `"aggressive"` | `string` | Configure global default interaction mode |
+#### Form State Tracking
 
-### Events
+Use `v-model:valid`, `v-model:dirty`, and `v-model:errors` to track form state:
 
-| Name           | Description                                       |
-| -------------- | ------------------------------------------------- |
-| `input`        | The `v-model` input event                         |
-| `submit`       | Emitted when the form is validated and submitted. |
-| `update:valid` | The `valid.sync` prop event                       |
+```vue
+<template>
+  <VDynamicForm
+    v-model="form"
+    v-model:valid="isValid"
+    v-model:dirty="isDirty"
+    v-model:errors="formErrors"
+    :inputs="inputs"
+  >
+    <template #after>
+      <VCardActions>
+        <VBtn
+          :disabled="!isValid || !isDirty"
+          color="primary"
+          @click="handleSubmit"
+        >
+          Save Changes
+        </VBtn>
+        <VBtn :disabled="!isDirty" @click="handleReset"> Reset </VBtn>
+      </VCardActions>
 
-### Slots
+      <!-- Display errors -->
+      <VAlert
+        v-if="Object.keys(formErrors).length > 0"
+        type="error"
+        class="mt-4"
+      >
+        <div v-for="(error, field) in formErrors" :key="field">
+          <strong>{{ field }}:</strong> {{ error }}
+        </div>
+      </VAlert>
+    </template>
+  </VDynamicForm>
+</template>
 
-| Name                       | Description                                                    | Props                           |
-| -------------------------- | -------------------------------------------------------------- | ------------------------------- |
-| `field:validation:{field}` | Use to override an input at the **validation-provider** level. | `{ field }`                     |
-| `field:{field}`            | Use to override an input at the component level.               | `{ ...field, invalid, errors }` |
-| `actions`                  | Use to override the default **SUBMIT** and **CLEAR** actions   | `{ submit, clear, invalid }`    |
+<script setup lang="ts">
+import { ref } from "vue";
 
-### Functions
+const form = ref({
+  firstName: "",
+  email: "",
+});
 
-| Name       | Description                                 |
-| ---------- | ------------------------------------------- |
-| `submit`   | Validates and emits `submit` event if valid |
-| `clear`    | Resets the form data and validation states  |
-| `reset`    | Reset the validation observer               |
-| `validate` | Validates all inputs and child forms        |
+const isValid = ref(false);
+const isDirty = ref(false);
+const formErrors = ref<Record<string, string>>({});
 
-### Classes
+const inputs = {
+  firstName: {
+    name: "First Name",
+    type: "text",
+    rules: "required|max:24",
+  },
+  email: {
+    name: "Email",
+    type: "text",
+    rules: "required|email",
+  },
+};
 
-| Name                      | Description                             |
-| ------------------------- | --------------------------------------- |
-| `v-dynamic-form`          | The components class                    |
-| `v-dynamic-form--inputs`  | The class group for all inputs          |
-| `v-dynamic-form--actions` | The class group for the default actions |
+const handleSubmit = () => {
+  if (isValid.value) {
+    console.log("Form submitted:", form.value);
+    // Submit logic here
+  }
+};
 
-## Contributing
+const handleReset = () => {
+  form.value = {
+    firstName: "",
+    email: "",
+  };
+  // Form will reset dirty state automatically
+};
+</script>
+```
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+**State Tracking Use Cases:**
 
-## Changelog
+- **`v-model:valid`** - Enable/disable submit buttons, show validation indicators
+- **`v-model:dirty`** - Show unsaved changes warnings, enable reset buttons
+- **`v-model:errors`** - Display error summaries, track validation issues
 
-Please see [CHANGELOG](./CHANGELOG.md).
+## 📚 API Reference
 
-## Credits
+### VDynamicForm Props
 
-- [Augustus Okoye](https://github.com/augustusnaz)
+| Prop                    | Type                  | Default      | Description                  |
+| ----------------------- | --------------------- | ------------ | ---------------------------- |
+| `modelValue`            | `Record<string, any>` | `{}`         | Form data (v-model)          |
+| `inputs`                | `FieldInputs`         | **required** | Field configuration          |
+| `defaults`              | `Record<string, any>` | `{}`         | Default values               |
+| `defaultProps`          | `Record<string, any>` | `{}`         | Default props for all fields |
+| `loading`               | `boolean`             | `false`      | Loading state                |
+| `readonly`              | `boolean`             | `false`      | Readonly state               |
+| `disabled`              | `boolean`             | `false`      | Disabled state               |
+| `tag`                   | `string`              | `'form'`     | Root element tag             |
+| `validateOnBlur`        | `boolean`             | `true`       | Validate on blur             |
+| `validateOnChange`      | `boolean`             | `true`       | Validate on change           |
+| `validateOnInput`       | `boolean`             | `true`       | Validate on input            |
+| `validateOnModelUpdate` | `boolean`             | `true`       | Validate on model update     |
+| `validateOnMount`       | `boolean`             | `false`      | Validate on mount            |
 
-## License
+### VDynamicForm Events
 
-[MIT](https://choosealicense.com/licenses/mit/)
+| Event               | Payload                  | Description                           |
+| ------------------- | ------------------------ | ------------------------------------- |
+| `update:modelValue` | `Record<string, any>`    | Emitted when form values change       |
+| `update:valid`      | `boolean`                | Emitted when validation state changes |
+| `update:dirty`      | `boolean`                | Emitted when dirty state changes      |
+| `update:errors`     | `Record<string, string>` | Emitted when errors change            |
+| `submit`            | `Record<string, any>`    | Emitted on form submit                |
+
+### FieldInput Type
+
+```typescript
+interface FieldInput {
+  key: string; // Required
+  name?: string;
+  label?: string;
+  type?:
+    | "text"
+    | "select"
+    | "checkbox"
+    | "slider"
+    | "range-slider"
+    | "switch"
+    | "textarea"
+    | "number"
+    | "radio";
+  component?: string | Component;
+  rules?: string | string[] | Schema | Function | Record<string, any>;
+  props?: Record<string, any>;
+  col?: Record<string, any>;
+  line?: number | string;
+  hidden?: boolean;
+  disabled?: boolean;
+  readonly?: boolean;
+  loading?: boolean;
+  hideName?: boolean;
+  wheelEvents?: boolean;
+  confirmEdit?: boolean;
+  cast?: "string" | "number" | "boolean" | "integer";
+  validateOnBlur?: boolean;
+  validateOnChange?: boolean;
+  validateOnInput?: boolean;
+  validateOnModelUpdate?: boolean;
+}
+```
+
+## 🔄 Migration from v1.x (Vue 2)
+
+### Breaking Changes
+
+1. **Vue 3 Required** - This version requires Vue 3
+2. **Prop Changes**:
+   - `value` → `modelValue`
+   - `inputFields` → `inputs`
+   - `@input` → `@update:model-value`
+3. **Validation** - Now uses vee-validate v4 (different API)
+4. **Type Changes** - Field configuration structure has changed
+
+### Migration Example
+
+**Before (v1.x):**
+
+```vue
+<VDynamicForm v-model="form" :input-fields="inputFields" />
+```
+
+**After (v2.x):**
+
+```vue
+<VDynamicForm v-model="form" :inputs="inputs" />
+```
+
+## 🛠️ Development
+
+```bash
+# Install dependencies
+npm install
+
+# Development
+npm run dev
+
+# Build
+npm run build
+
+# Type check
+npm run type-check
+
+# Lint
+npm run lint
+```
+
+## 📝 License
+
+MIT © [Augustus Okoye](https://github.com/moirei)
+
+## 🙏 Acknowledgments
+
+Built with:
+
+- [Vue 3](https://vuejs.org/)
+- [Vuetify 3](https://vuetifyjs.com/)
+- [vee-validate](https://vee-validate.logaretm.com/)
