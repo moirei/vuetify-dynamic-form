@@ -9,6 +9,7 @@ export {
   defineFormInput,
   defineFormInputs,
 } from "../runtime/composables/dynamic-forms";
+export { useFormInputs } from "../runtime/composables/form-inputs";
 export type * from "../runtime/types";
 
 export default {

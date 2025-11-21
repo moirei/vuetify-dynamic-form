@@ -340,6 +340,95 @@ const handleReset = () => {
 - **`v-model:dirty`** - Show unsaved changes warnings, enable reset buttons
 - **`v-model:errors`** - Display error summaries, track validation issues
 
+### Using `useFormInputs` Composable
+
+The `useFormInputs` composable provides a programmatic way to manage form inputs with type-safe field access. It's perfect for custom form layouts where you want full control over rendering.
+
+```vue
+<template>
+  <VTextField
+    v-model="fields.name.value"
+    v-bind="fields.name.attrs"
+    placeholder="Project name"
+  />
+
+  <VTextarea
+    v-model="fields.description.value"
+    v-bind="fields.description.attrs"
+    placeholder="Add description"
+  />
+
+  <VBtn :disabled="!valid" @click="handleSubmit"> Submit </VBtn>
+</template>
+
+<script setup lang="ts">
+import { useFormInputs } from "@moirei/vuetify-dynamic-form";
+
+type ProjectInput = {
+  name: string;
+  description?: string;
+  team: string;
+};
+
+const { fields, valid, values, setValue } = useFormInputs<ProjectInput>({
+  name: "required|max:100",
+  description: "max:500",
+  team: "required",
+});
+
+const handleSubmit = () => {
+  console.log("Form values:", values.value);
+};
+</script>
+```
+
+**Key Features:**
+
+- **Type-safe**: TypeScript ensures required fields are provided and optional fields are truly optional
+- **Field access**: Access fields via `fields.fieldName.value` and `fields.fieldName.attrs`
+- **Validation**: Built-in validation with `valid` computed property
+- **Values**: Access all form values via `values` ref
+- **Set values**: Use `setValue(key, value)` to programmatically set field values
+
+**Field Definition:**
+
+Fields can be defined as:
+
+- **String** (validation rules): `"required|email"`
+- **Object** (full field config): `{ rules: "required", label: "Email" }`
+
+**Returned Properties:**
+
+| Property       | Type                            | Description                                      |
+| -------------- | ------------------------------- | ------------------------------------------------ |
+| `fields`       | `Record<K, Field<T[K]>>`        | Object with field accessors (`.value`, `.attrs`) |
+| `valid`        | `ComputedRef<boolean>`          | Form validation state                            |
+| `dirty`        | `ComputedRef<boolean>`          | Form dirty state                                 |
+| `values`       | `Ref<T>`                        | All form values                                  |
+| `errors`       | `Ref<Record<string, string>>`   | Field errors                                     |
+| `errorBag`     | `Ref<ErrorBag>`                 | Detailed error information                       |
+| `setValue`     | `(key: K, value: T[K]) => void` | Set a field value                                |
+| `setValues`    | `(values: Partial<T>) => void`  | Set multiple field values                        |
+| `validate`     | `() => Promise<boolean>`        | Validate the form                                |
+| `resetForm`    | `() => void`                    | Reset form to initial state                      |
+| `isFieldDirty` | `(field: string) => boolean`    | Check if field is dirty                          |
+| `isFieldValid` | `(field: string) => boolean`    | Check if field is valid                          |
+
+**Advanced Options:**
+
+```typescript
+const { fields, valid } = useFormInputs<FormType>({
+  inputs: {
+    email: { rules: "required|email", label: "Email Address" },
+    name: "required|min:3",
+  },
+  initialState: { email: "user@example.com" },
+  validateOnMount: true,
+  validateOnBlur: true,
+  validateOnChange: true,
+});
+```
+
 ## 📚 API Reference
 
 ### VDynamicForm Props

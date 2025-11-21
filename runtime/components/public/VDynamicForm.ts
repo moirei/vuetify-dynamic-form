@@ -87,11 +87,11 @@ export default defineComponent({
       if (updatingExternal.value) return;
       updatingLocal.value = true;
       nextTick(() => {
-        const newDate = cloneDeep(values);
+        const newData = cloneDeep(values);
         const fieldKeys = Object.keys(fields.value.schema);
         ctx.emit("update:modelValue", {
           ...props.modelValue,
-          ...pick(newDate, fieldKeys),
+          ...pick(newData, fieldKeys),
         });
         nextTick(() => {
           updatingLocal.value = false;

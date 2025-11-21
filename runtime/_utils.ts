@@ -17,6 +17,7 @@ import {
   isString,
   isUndefined,
   max,
+  parseRules,
   sortBy,
   upperFirst,
 } from "./utils/helpers";
@@ -70,13 +71,6 @@ export const castValue = (value: any, cast: FieldInput["cast"]): unknown => {
     }
   }
   return value;
-};
-
-const parseRules = (rules: FieldInput["rules"]): any => {
-  if (Array.isArray(rules)) {
-    return rules.join("|");
-  }
-  return rules;
 };
 
 const extractFieldDefaults = (

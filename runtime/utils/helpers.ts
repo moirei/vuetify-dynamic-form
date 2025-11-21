@@ -1,3 +1,5 @@
+import { FieldInput } from "~/types";
+
 export const get = (
   obj: any,
   path: string | string[],
@@ -133,4 +135,11 @@ export const omit = <T, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> => {
     }
   }
   return result;
+};
+
+export const parseRules = (rules: FieldInput["rules"]): any => {
+  if (Array.isArray(rules)) {
+    return rules.join("|");
+  }
+  return rules;
 };
