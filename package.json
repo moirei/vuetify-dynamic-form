@@ -1,6 +1,6 @@
 {
   "name": "@moirei/vuetify-dynamic-form",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Dynamically create Vuetify 3 forms with Vue 3. Works with and without Nuxt.",
   "type": "module",
   "license": "MIT",

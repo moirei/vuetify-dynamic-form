@@ -2,6 +2,13 @@
 
 ## Changelog
 
+### [2.1.1] - 2024-12-XX
+
+**Bug Fixes:**
+
+- Improved `isFormOptionsInputs` type guard to correctly handle edge case where `FormInputs` has a field named "inputs"
+- Added smarter detection logic that checks for `FormOptionsWithInput`-specific properties and examines structure of inputs value
+
 ### [2.1.0] - 2024-12-XX
 
 **New Features:**
