@@ -1,7 +1,7 @@
 import { computed, toRaw } from "vue";
 import { useForm as useVeeValidateForm } from "vee-validate";
-import { FieldInputWithoutKey } from "~/types";
-import { isString, parseRules, upperFirst } from "../utils/helpers";
+import { FieldInputWithoutKey } from "../types";
+import { isString, isObject, parseRules, upperFirst } from "../utils/helpers";
 
 type FieldValidation = {
   validateOnBlur?: boolean;
@@ -52,7 +52,60 @@ type Field<V> = {
 const isFormOptionsInputs = (
   options: FormOptions<any>
 ): options is FormInputs<any> => {
-  return !("inputs" in options);
+  // If "inputs" doesn't exist, it's definitely FormInputs
+  if (!("inputs" in options)) {
+    return true;
+  }
+
+  const inputsValue = (options as any).inputs;
+
+  // If "inputs" exists but is a string or FieldInput (not an object),
+  // then "inputs" is a field name, so it's FormInputs
+  if (!isObject(inputsValue)) {
+    return true;
+  }
+
+  // If "inputs" is an object, check if it looks like FormInputs (record of FieldInput | string)
+  // vs FormOptionsWithInput.inputs (which is also FormInputs, but nested)
+  // We can distinguish by checking if the object has properties that are strings or FieldInput-like objects
+  // AND if there are other FormOptionsWithInput-specific properties
+
+  // Check for FormOptionsWithInput-specific properties that don't exist in FormInputs
+  // These are unique to FormOptionsWithInput
+  const hasFormOptionsProperties =
+    "initialState" in options || "validateOnMount" in options;
+
+  if (hasFormOptionsProperties) {
+    return false; // Definitely FormOptionsWithInput
+  }
+
+  // If "inputs" is an object, check if it looks like a FormInputs record
+  // FormInputs is Record<string, FieldInput | string>
+  // FormOptionsWithInput.inputs is also FormInputs, but nested under "inputs" key
+  const inputsKeys = Object.keys(inputsValue);
+
+  if (inputsKeys.length === 0) {
+    // Empty object - ambiguous, but if it has "inputs" key, assume FormOptionsWithInput
+    return false;
+  }
+
+  // Check if the values look like form field definitions (string or FieldInput)
+  const firstValue = (inputsValue as Record<string, any>)[inputsKeys[0]];
+
+  // If first value is a string or an object with field-like properties,
+  // then inputsValue is a FormInputs record, so options is FormOptionsWithInput
+  const looksLikeFormInputsRecord =
+    isString(firstValue) ||
+    (isObject(firstValue) &&
+      ("rules" in firstValue ||
+        "name" in firstValue ||
+        "label" in firstValue ||
+        "type" in firstValue ||
+        "component" in firstValue));
+
+  // If it looks like a FormInputs record, then "inputs" is the FormOptionsWithInput.inputs property
+  // Otherwise, "inputs" is a field name in FormInputs
+  return !looksLikeFormInputsRecord;
 };
 
 const parseFieldsInput = (options: FormOptionsWithInput<any>) => {
